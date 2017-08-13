@@ -12,7 +12,7 @@
 
 /**
  * The modified version
- * @version 1.2.5 (https://github.com/BluesatKV/jquery-tabledit)
+ * @version 1.2.6 (https://github.com/BluesatKV/jquery-tabledit)
  * @author BluesatKV
  */
 
@@ -31,18 +31,18 @@ $.Tabledit = {
       btn_restore: 'Restore'
     },
     de: {
-      btn_edit: '',
-      btn_delete: '',
-      btn_confirm: '',
-      btn_save: '',
-      btn_restore: ''
+      btn_edit: 'Editieren',
+      btn_delete: 'L&ouml;schen',
+      btn_confirm: 'Best&auml;tigen',
+      btn_save: 'Speichern',
+      btn_restore: 'Inhalt'
     },
     fr: {
-      btn_edit: '',
-      btn_delete: '',
-      btn_confirm: '',
-      btn_save: '',
-      btn_restore: ''
+      btn_edit: 'Éditer',
+      btn_delete: 'Supprimer',
+      btn_confirm: 'Confirmer',
+      btn_save: 'Sauver',
+      btn_restore: 'Restaurer'
     },
     cz: {
       btn_edit: 'Editovat',
@@ -92,6 +92,10 @@ $.Tabledit = {
       hideIdentifier: false,
       // Activate focus on first input of a row when click in save button
       autoFocus: true,
+      // Localization -(en, default) - LowerCase or UpperCase
+      lang: 'en',
+      // Escape Html - convert hmtl character
+      escapehtml: true,
       // Activate edit button instead of spreadsheet style
       editButton: true,
       // Activate delete button
@@ -100,10 +104,6 @@ $.Tabledit = {
       saveButton: true,
       // Activate restore button to undo delete action
       restoreButton: true,
-      // Localization -(en, default) - LowerCase or UpperCase
-      lang: 'en',
-      // Escape Html - convert hmtl character
-      escapehtml: true,
       // Customize buttons created in the table
       buttons: {
         edit: {
@@ -231,6 +231,83 @@ $.Tabledit = {
       return String(string).replace(/[&<>"'`=\/]/g, function (s) {
         return entityMap[s];
       });
+    }
+
+    /**
+     * Send AJAX request to server.
+     *
+     * @param {string} action
+     */
+    function ajax(action) {
+      var serialize = $table.find('.tabledit-input').serialize()
+
+      if (!serialize) {
+        return false;
+      }
+
+      serialize += '&action=' + action;
+
+      var result = settings.onAjax(action, serialize);
+
+      if (result === false) {
+        return false;
+      }
+
+      settings.method = settings[action + 'method'];
+
+      var jqXHR = $.ajax({
+        url: settings.url,
+        type: settings.method,
+        data: serialize,
+        dataType: 'json'
+      });
+
+      // DONE callback-manipulation function - success
+      jqXHR.done(function (data, textStatus, jqXHR) {
+        // When AJAX call is successfuly
+
+        // `data` contains parsed JSON
+
+        if (action === settings.buttons.edit.action) {
+          $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+          setTimeout(function () {
+            //$lastEditedRow.removeClass(settings.warningClass);
+            $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
+          }, 1400);
+        }
+
+        settings.onSuccess(data, textStatus, jqXHR);
+
+      });
+
+      // FAIL callback-manipulation function - error
+      jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+        // When AJAX call has failed
+
+        if (action === settings.buttons.delete.action) {
+          $lastDeletedRow.removeClass(settings.mutedClass).addClass(settings.dangerClass);
+          $lastDeletedRow.find('.tabledit-toolbar button').attr('disabled', false);
+          $lastDeletedRow.find('.tabledit-toolbar .tabledit-restore-button').hide();
+        } else if (action === settings.buttons.edit.action) {
+          $lastEditedRow.addClass(settings.dangerClass);
+        }
+
+        settings.onFail(jqXHR, textStatus, errorThrown);
+
+        // Console log output
+        console.log('Tabledit Ajax fail => ' + textStatus + ' : ' + errorThrown);
+
+      });
+
+      // ALWAYS callback-manipulation function - complete
+      jqXHR.always(function () {
+        // When AJAX call is complete, will fire upon success or when error is thrown
+
+        settings.onAlways();
+
+      });
+
+      return jqXHR;
     }
 
     /**
@@ -521,83 +598,7 @@ $.Tabledit = {
       }
     };
 
-    /**
-     * Send AJAX request to server.
-     *
-     * @param {string} action
-     */
-    function ajax(action) {
-      var serialize = $table.find('.tabledit-input').serialize()
-
-      if (!serialize) {
-        return false;
-      }
-
-      serialize += '&action=' + action;
-
-      var result = settings.onAjax(action, serialize);
-
-      if (result === false) {
-        return false;
-      }
-
-      settings.method = settings[action + 'method'];
-
-      var jqXHR = $.ajax({
-        url: settings.url,
-        type: settings.method,
-        data: serialize,
-        dataType: 'json'
-      });
-
-      // DONE callback-manipulation function - success
-      jqXHR.done(function (data, textStatus, jqXHR) {
-        // When AJAX call is successfuly
-
-        // `data` contains parsed JSON
-
-        if (action === settings.buttons.edit.action) {
-          $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
-          setTimeout(function () {
-            //$lastEditedRow.removeClass(settings.warningClass);
-            $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
-          }, 1400);
-        }
-
-        settings.onSuccess(data, textStatus, jqXHR);
-
-      });
-
-      // FAIL callback-manipulation function - error
-      jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
-        // When AJAX call has failed
-
-        if (action === settings.buttons.delete.action) {
-          $lastDeletedRow.removeClass(settings.mutedClass).addClass(settings.dangerClass);
-          $lastDeletedRow.find('.tabledit-toolbar button').attr('disabled', false);
-          $lastDeletedRow.find('.tabledit-toolbar .tabledit-restore-button').hide();
-        } else if (action === settings.buttons.edit.action) {
-          $lastEditedRow.addClass(settings.dangerClass);
-        }
-
-        settings.onFail(jqXHR, textStatus, errorThrown);
-
-        // Console log output
-        console.log('Tabledit Ajax fail => ' + textStatus + ' : ' + errorThrown);
-
-      });
-
-      // ALWAYS callback-manipulation function - complete
-      jqXHR.always(function () {
-        // When AJAX call is complete, will fire upon success or when error is thrown
-
-        settings.onAlways();
-
-      });
-
-      return jqXHR;
-    }
-
+    // Draw columns
     Draw.columns.identifier();
     Draw.columns.editable();
     Draw.columns.toolbar();
