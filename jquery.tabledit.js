@@ -158,14 +158,18 @@ $.Tabledit = {
       }
     };
 
+    var notNull = function(value) {
+      return value === undefined || value === null || value === '';
+    };
+
     // Check User Options isn't empty
-    if (typeof options.columns == 'undefined') {
+    if (notNull(options.columns)) {
       // Check if Required options exists
       console.log('Tabledit Jquery Plugin not initialize. Set required parameters.');
       return this;
     }
 
-    if (options.lang && options.lang in $.Tabledit.langs) {
+    if (notNull(options.lang) && options.lang in $.Tabledit.langs) {
       // If Language exist in 'Tabledit.langs'
       options.lang = options.lang.toLowerCase();
     } else {
