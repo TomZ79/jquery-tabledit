@@ -293,15 +293,21 @@ $.Tabledit = {
 
         // `data` contains parsed JSON
 
-        if (action === settings.buttons.edit.action) {
-          $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
-          setTimeout(function () {
-            //$lastEditedRow.removeClass(settings.warningClass);
-            $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
-          }, 1400);
-        }
+        if (textStatus == 'success') {
+          if (action === settings.buttons.edit.action) {
+            $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+            setTimeout(function () {
+              //$lastEditedRow.removeClass(settings.warningClass);
+              $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
+            }, 1400);
+          }
 
-        settings.onSuccess(data, textStatus, jqXHR);
+          // Initiate save successful custom callback
+          settings.onSuccess(data, textStatus, jqXHR);
+        } else {
+          // Initiate save failed custom callback
+          settings.onFail(textStatus);
+        }
 
       });
 
@@ -317,6 +323,7 @@ $.Tabledit = {
           $lastEditedRow.addClass(settings.dangerClass);
         }
 
+        // Initiate save failed custom callback
         settings.onFail(jqXHR, textStatus, errorThrown);
 
         // Console log output
