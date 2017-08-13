@@ -15,30 +15,28 @@ if ($_SERVER['REQUEST_METHOD']=='POST') {
 // PHP QUESTION TO MYSQL DB
 
 // Connect to DB
-$mysqli = new mysqli('localhost', 'user', 'password', 'database');
 
-if (mysqli_connect_errno()) {
-  echo json_encode(array('mysqli' => 'Failed to connect to MySQL: ' . mysqli_connect_error()));
-  exit;
-}
+  /*  Your code for new connection to DB*/
+
 
 // Php question
 if ($input['action'] === 'edit') {
 
-  $mysqli->query("UPDATE users SET username='" . $input['username'] . "', email='" . $input['email'] . "', avatar='" . $input['avatar'] . "' WHERE id='" . $input['id'] . "'");
+  // PHP code for edit action
 
 } else if ($input['action'] === 'delete') {
 
-  $mysqli->query("UPDATE users SET deleted=1 WHERE id='" . $input['id'] . "'");
+  // PHP code for edit delete
 
 } else if ($input['action'] === 'restore') {
 
-  $mysqli->query("UPDATE users SET deleted=0 WHERE id='" . $input['id'] . "'");
+  // PHP code for edit restore
 
 }
 
 // Close connection to DB
-mysqli_close($mysqli);
+
+/*  Your code for close connection to DB*/
 
 // RETURN OUTPUT
 echo json_encode($input);
