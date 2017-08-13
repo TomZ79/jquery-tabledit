@@ -14,6 +14,27 @@
  * The modified version
  * @version 1.2.6 (https://github.com/BluesatKV/jquery-tabledit)
  * @author BluesatKV
+ *
+ * REQUEST USER OPTIONS
+ * --------------------
+ * // Example #1
+ *
+ *  columns: {
+ *
+ *    // Column used to identify table row.
+ *    // [column_index, input_name]
+ *    identifier: [0, 'id'],
+ *
+ *    // Columns to transform in editable cells.
+ *    // [[column_index, input_name, input_type], [column_index, input_name, input_type, select_options]]
+ *    editable: [
+ *          [1, 'col1', 'input'],
+ *          [2, 'col1', 'hidden'],
+ *          [3, 'col3', 'number'],
+ *          [4, 'col4', 'textarea'],
+ *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']]
+ *  }
+ *
  */
 
 if (typeof jQuery === 'undefined') {
@@ -359,26 +380,65 @@ $.Tabledit = {
               var span = '<span class="tabledit-span">' + text + '</span>';
               var input;
 
-              // Check if exists the third parameter of editable array.
-              if (typeof settings.columns.editable[i][2] !== 'undefined') {
-                // Create select element.
-                input = '<select class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>';
+              // List of valid values for columnType
+              var supportedTypes = ["input", "hidden", "number", "select", "textarea"];
 
-                // Create options for select element.
-                $.each(jQuery.parseJSON(settings.columns.editable[i][2]), function (index, value) {
-                  value = $.trim(value);
-                  if (text === value) {
-                    input += '<option value="' + index + '" selected>' + value + '</option>';
-                  } else {
-                    input += '<option value="' + index + '">' + value + '</option>';
+              // Get type from colums user definition
+              var columnType = settings.columns.editable[i][2];
+
+              // Ignore element if not of supported type
+              if ($.inArray(columnType, supportedTypes) == -1) {
+                columnType = 'input';
+              }
+
+              switch (columnType) {
+                case 'input':
+
+                  // Create text input element.
+                  input = '<input class="tabledit-input ' + settings.inputClass + '" type="text" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+
+                  break;
+                case 'hidden':
+
+                  // Create text input element.
+                  input = '<input class="tabledit-input ' + settings.inputClass + '" type="hidden" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+
+                  break;
+                case 'number':
+
+                  // Create text input element.
+                  input = '<input class="tabledit-input ' + settings.inputClass + '" type="number" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+
+                  break;
+                case 'select':
+
+                  // Check if exists the third parameter of editable array.
+                  if (typeof settings.columns.editable[i][3] !== 'undefined') {
+                    // Create select element.
+                    input = '<select class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>';
+
+                    // Create options for select element.
+                    $.each(jQuery.parseJSON(settings.columns.editable[i][3]), function (index, value) {
+                      value = $.trim(value);
+                      if (text === value) {
+                        input += '<option value="' + index + '" selected>' + value + '</option>';
+                      } else {
+                        input += '<option value="' + index + '">' + value + '</option>';
+                      }
+                    });
+
+                    // Create last piece of select element.
+                    input += '</select>';
                   }
-                });
 
-                // Create last piece of select element.
-                input += '</select>';
-              } else {
-                // Create text input element.
-                input = '<input class="tabledit-input ' + settings.inputClass + '" type="text" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+                  break;
+                case 'textarea':
+
+                  // Create textarea element.
+                  input = '<textarea rows="2" class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text + '</textarea>';
+
+                  break;
+
               }
 
               // Add elements and class "view" to table cell.
