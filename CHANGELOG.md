@@ -3,6 +3,7 @@ v1.2.5 (2017/08/13)
 - Updated 'example.php' file
 - Improved language localization
 - Improved Ajax request to server with callback function
+- Stop submit normaly form
 - Fix typo
 
 v1.2.4 (2017/08/12)
