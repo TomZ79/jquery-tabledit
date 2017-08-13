@@ -74,7 +74,7 @@ Original example by _markcell_ you find on
 http://markcell.github.io/jquery-tabledit/#documentation
 
 Full complete documentation by BluesatKV on 
-https://bluesatkv.github.io/jquery-tabledit/
+https://bluesatkv.github.io/jquery-tabledit/#documentation
 
 
 ## Changelog
