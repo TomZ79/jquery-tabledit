@@ -1,0 +1,817 @@
+/*!
+ * Tabledit v1.2.3 (https://github.com/markcell/jQuery-Tabledit)
+ * Copyright (c) 2015 Celso Marques
+ * Licensed under MIT (https://github.com/markcell/jQuery-Tabledit/blob/master/LICENSE)
+ */
+
+/**
+ * @description Inline editor for HTML tables compatible with Bootstrap
+ * @version 1.2.3
+ * @author Celso Marques
+ */
+
+/**
+ * The modified version
+ * @version 1.2.5 (https://github.com/BluesatKV/jquery-tabledit)
+ * @author BluesatKV
+ */
+
+if (typeof jQuery === 'undefined') {
+  throw new Error('Tabledit requires jQuery library.');
+}
+
+// LANGUAGE/LOCALIZATION
+$.Tabledit = {
+  langs: {
+    en: {
+      btn_edit: 'Edit',
+      btn_delete: 'Delete',
+      btn_confirm: 'Confirm',
+      btn_save: 'Save',
+      btn_restore: 'Restore'
+    },
+    de: {
+      btn_edit: '',
+      btn_delete: '',
+      btn_confirm: '',
+      btn_save: '',
+      btn_restore: ''
+    },
+    fr: {
+      btn_edit: '',
+      btn_delete: '',
+      btn_confirm: '',
+      btn_save: '',
+      btn_restore: ''
+    },
+    cz: {
+      btn_edit: 'Editovat',
+      btn_delete: 'Odstranit',
+      btn_confirm: 'Potvrdit',
+      btn_save: 'Uložit',
+      btn_restore: 'Obnovit'
+    }
+  }
+};
+
+// TABLE EDIT PLUGIN
+(function ($) {
+  'use strict';
+
+  $.fn.Tabledit = function (options) {
+    if (!this.is('table')) {
+      throw new Error('Tabledit only works when applied to a table.');
+    }
+
+    var $table = this;
+
+    // Set default options
+    var defaults = {
+      // Link to server script
+      url: window.location.href,
+      // Server request method for action 'edit' and 'delete'
+      editmethod: 'post',
+      deletemethod: 'post',
+      // Class for form inputs
+      inputClass: 'form-control input-sm',
+      // Class for buttons toolbar
+      toolbarClass: 'btn-toolbar',
+      // Class for buttons group
+      groupClass: 'btn-group btn-group-sm',
+      // Class for row when ajax request fails
+      dangerClass: 'danger',
+      // Class for row when save changes
+      warningClass: 'warning',
+      // Class for row when is deleted
+      mutedClass: 'text-muted',
+      // Trigger to change for edit mode
+      eventType: 'click',
+      // Change the name of attribute in td element for the row identifier
+      rowIdentifier: 'id',
+      // Hide the column that has the identifier
+      hideIdentifier: false,
+      // Activate focus on first input of a row when click in save button
+      autoFocus: true,
+      // Activate edit button instead of spreadsheet style
+      editButton: true,
+      // Activate delete button
+      deleteButton: true,
+      // Activate save button when click on edit button
+      saveButton: true,
+      // Activate restore button to undo delete action
+      restoreButton: true,
+      // Localization -(en, default) - LowerCase or UpperCase
+      lang: 'en',
+      // Escape Html - convert hmtl character
+      escapehtml: true,
+      // Customize buttons created in the table
+      buttons: {
+        edit: {
+          class: 'btn btn-sm btn-default',
+          html: '<span class="glyphicon glyphicon-pencil"></span>',
+          action: 'edit'
+        },
+        delete: {
+          class: 'btn btn-sm btn-default',
+          html: '<span class="glyphicon glyphicon-trash"></span>',
+          action: 'delete'
+        },
+        save: {
+          class: 'btn btn-sm btn-success',
+          html: ''
+        },
+        restore: {
+          class: 'btn btn-sm btn-warning',
+          html: 'Restore',
+          action: 'restore'
+        },
+        confirm: {
+          class: 'btn btn-sm btn-danger',
+          html: 'Confirm'
+        }
+      },
+      /**
+       * REQUIRED - Set up in user options
+       * Identifier column and editable columns
+       * More info in Documentation (https://markcell.github.io/jquery-tabledit/#documentation)
+       * columns: '',
+       */
+      // Executed after draw the structure
+      onDraw: function () {
+        return;
+      },
+      // Executed when the ajax request is completed
+      onSuccess: function () {
+        return;
+      },
+      // Executed when occurred an error on ajax request
+      onFail: function () {
+        return;
+      },
+      // Executed whenever there is an ajax request
+      onAlways: function () {
+        return;
+      },
+      // Executed before the ajax request
+      onAjax: function () {
+        return;
+      }
+    };
+
+    // Check User Options isn't empty
+    if (typeof options.columns == 'undefined') {
+      // Check if Required options exists
+      console.log('Tabledit Jquery Plugin not initialize. Set required parameters.');
+      return this;
+    }
+
+    if (options.lang && options.lang in $.Tabledit.langs) {
+      // If Language exist in 'Tabledit.langs'
+      options.lang = options.lang.toLowerCase();
+    } else {
+      // Set Language/localization
+      options.lang = defaults.lang;
+    }
+
+    // Overwrite default options with user provided ones and merge them into "settings" - recursively
+    var settings = $.extend(true, defaults, options);
+
+    var $lastEditedRow = 'undefined';
+    var $lastDeletedRow = 'undefined';
+    var $lastRestoredRow = 'undefined';
+
+    // Set html for all buttons
+    if (settings.editButton && settings.buttons.edit.html) {
+      var editButtonHtml = settings.buttons.edit.html;
+    } else {
+      var editButtonHtml = $.Tabledit.langs[settings.lang].btn_edit;
+    }
+
+    if (settings.deleteButton && settings.buttons.delete.html) {
+      var deleteButtonHtml = settings.buttons.delete.html;
+    } else {
+      var deleteButtonHtml = $.Tabledit.langs[settings.lang].btn_delete;
+    }
+
+    if (settings.confirmButton && settings.buttons.confirm.html) {
+      var confirmButtonHtml = settings.buttons.confirm.html;
+    } else {
+      var confirmButtonHtml = $.Tabledit.langs[settings.lang].btn_confirm;
+    }
+
+    if (settings.saveButton && settings.buttons.save.html) {
+      var saveButtonHtml = settings.buttons.save.html;
+    } else {
+      var saveButtonHtml = $.Tabledit.langs[settings.lang].btn_save;
+    }
+
+    if (settings.restoreButton && settings.buttons.restore.html) {
+      var restoreButtonHtml = settings.buttons.restore.html;
+    } else {
+      var restoreButtonHtml = $.Tabledit.langs[settings.lang].btn_restore;
+    }
+
+    /**
+     * Escape HTML
+     *
+     * @param {string} value
+     */
+    function escapeHTML(string) {
+      var entityMap = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '', // &quot;
+        "'": '', // &#39;
+        '/': '&#x2F;',
+        '`': '&#x60;',
+        '=': '&#x3D;'
+      };
+
+      return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+        return entityMap[s];
+      });
+    }
+
+    /**
+     * Draw Tabledit structure (identifier column, editable columns, toolbar column).
+     *
+     * @type {object}
+     */
+    var Draw = {
+      columns: {
+        identifier: function () {
+          // Hide identifier column.
+          if (settings.hideIdentifier) {
+            $table.find('th:nth-child(' + parseInt(settings.columns.identifier[0]) + 1 + '), tbody td:nth-child(' + parseInt(settings.columns.identifier[0]) + 1 + ')').hide();
+          }
+
+          var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
+
+          $td.each(function () {
+            // Create hidden input with row identifier.
+            var span = '<span class="tabledit-span tabledit-identifier">' + $.trim($(this).text()) + '</span>';
+            var input = '<input class="tabledit-input tabledit-identifier" type="hidden" name="' + settings.columns.identifier[1] + '" value="' + $.trim($(this).text()) + '" disabled>';
+
+            // Add elements to table cell.
+            $(this).html(span + input);
+
+            // Add attribute "id" to table row.
+            $(this).parent('tr').attr(settings.rowIdentifier, $.trim($(this).text()));
+          });
+        },
+        editable: function () {
+          for (var i = 0; i < settings.columns.editable.length; i++) {
+            var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
+
+            $td.each(function () {
+              // Get text of this cell.
+              var text = $.trim($(this).text());
+              var text = settings.escapehtml ? escapeHTML($(this).text()) : text;
+
+              // Add pointer as cursor.
+              if (!settings.editButton) {
+                $(this).css('cursor', 'pointer');
+              }
+
+              // Create span element.
+              var span = '<span class="tabledit-span">' + text + '</span>';
+              var input;
+
+              // Check if exists the third parameter of editable array.
+              if (typeof settings.columns.editable[i][2] !== 'undefined') {
+                // Create select element.
+                input = '<select class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>';
+
+                // Create options for select element.
+                $.each(jQuery.parseJSON(settings.columns.editable[i][2]), function (index, value) {
+                  value = $.trim(value);
+                  if (text === value) {
+                    input += '<option value="' + index + '" selected>' + value + '</option>';
+                  } else {
+                    input += '<option value="' + index + '">' + value + '</option>';
+                  }
+                });
+
+                // Create last piece of select element.
+                input += '</select>';
+              } else {
+                // Create text input element.
+                input = '<input class="tabledit-input ' + settings.inputClass + '" type="text" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+              }
+
+              // Add elements and class "view" to table cell.
+              $(this).html(span + input);
+              $(this).addClass('tabledit-view-mode');
+            });
+          }
+        },
+        toolbar: function () {
+          if (settings.editButton || settings.deleteButton) {
+            var editButton = '';
+            var deleteButton = '';
+            var saveButton = '';
+            var restoreButton = '';
+            var confirmButton = '';
+
+            // Add toolbar column header if not exists.
+            if ($table.find('th.tabledit-toolbar-column').length === 0) {
+              $table.find('tr:first').append('<th class="tabledit-toolbar-column"></th>');
+            }
+
+            // Create edit button.
+            if (settings.editButton) {
+              editButton = '<button type="button" class="tabledit-edit-button ' + settings.buttons.edit.class + '" style="float: none;">' + editButtonHtml + '</button>';
+            }
+
+            // Create delete button.
+            if (settings.deleteButton) {
+              deleteButton = '<button type="button" class="tabledit-delete-button ' + settings.buttons.delete.class + '" style="float: none;">' + deleteButtonHtml + '</button>';
+              confirmButton = '<button type="button" class="tabledit-confirm-button ' + settings.buttons.confirm.class + '" style="display: none; float: none;">' + confirmButtonHtml + '</button>';
+            }
+
+            // Create save button.
+            if (settings.editButton && settings.saveButton) {
+              saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none;">' + saveButtonHtml + '</button>';
+            }
+
+            // Create restore button.
+            if (settings.deleteButton && settings.restoreButton) {
+              restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none;">' + restoreButtonHtml + '</button>';
+            }
+
+            var toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
+                                           <div class="' + settings.groupClass + '" style="float: none;">' + editButton + deleteButton + '</div>\n\
+                                           ' + saveButton + '\n\
+                                           ' + confirmButton + '\n\
+                                           ' + restoreButton + '\n\
+                                       </div></div>';
+
+            // Add toolbar column cells.
+            $table.find('tbody>tr').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+          }
+        }
+      }
+    };
+
+    /**
+     * Change to view mode or edit mode with table td element as parameter.
+     *
+     * @type object
+     */
+    var Mode = {
+      view: function (td) {
+        // Get table row.
+        var $tr = $(td).parent('tr');
+        // Disable identifier.
+        $(td).parent('tr').find('.tabledit-input.tabledit-identifier').prop('disabled', true);
+        // Hide and disable input element.
+        $(td).find('.tabledit-input').blur().hide().prop('disabled', true);
+        // Show span element.
+        $(td).find('.tabledit-span').show();
+        // Add "view" class and remove "edit" class in td element.
+        $(td).addClass('tabledit-view-mode').removeClass('tabledit-edit-mode');
+        // Update toolbar buttons.
+        if (settings.editButton) {
+          $tr.find('button.tabledit-save-button').hide();
+          $tr.find('button.tabledit-edit-button').removeClass('active').blur();
+        }
+      },
+      edit: function (td) {
+        Delete.reset(td);
+        // Get table row.
+        var $tr = $(td).parent('tr');
+        // Enable identifier.
+        $tr.find('.tabledit-input.tabledit-identifier').prop('disabled', false);
+        // Hide span element.
+        $(td).find('.tabledit-span').hide();
+        // Get input element.
+        var $input = $(td).find('.tabledit-input');
+        // Enable and show input element.
+        $input.prop('disabled', false).show();
+        // Focus on input element.
+        if (settings.autoFocus) {
+          $input.focus();
+        }
+        // Add "edit" class and remove "view" class in td element.
+        $(td).addClass('tabledit-edit-mode').removeClass('tabledit-view-mode');
+        // Update toolbar buttons.
+        if (settings.editButton) {
+          $tr.find('button.tabledit-edit-button').addClass('active');
+          $tr.find('button.tabledit-save-button').show();
+        }
+      }
+    };
+
+    /**
+     * Available actions for edit function, with table td element as parameter or set of td elements.
+     *
+     * @type object
+     */
+    var Edit = {
+      reset: function (td) {
+        $(td).each(function () {
+          // Get input element.
+          var $input = $(this).find('.tabledit-input');
+          // Get span text.
+          var text = $.trim($(this).find('.tabledit-span').text());
+          // Set input/select value with span text.
+          if ($input.is('select')) {
+            $input.find('option').filter(function () {
+              return $.trim($(this).text()) === text;
+            }).attr('selected', true);
+          } else {
+            $input.val(text);
+          }
+          // Change to view mode.
+          Mode.view(this);
+        });
+      },
+      submit: function (td) {
+
+        // Send AJAX request to server.
+        var ajaxResult = ajax(settings.buttons.edit.action);
+
+        if (ajaxResult === false) {
+          return;
+        }
+
+        $(td).each(function () {
+          // Get input element.
+          var $input = $(this).find('.tabledit-input');
+          // Set span text with input/select new value.
+          if ($input.is('select')) {
+            $(this).find('.tabledit-span').text($.trim($input.find('option:selected').text()));
+          } else {
+            $(this).find('.tabledit-span').text($input.val());
+          }
+          // Change to view mode.
+          Mode.view(this);
+        });
+
+        // Set last edited column and row.
+        $lastEditedRow = $(td).parent('tr');
+      }
+    };
+
+    /**
+     * Available actions for delete function, with button as parameter.
+     *
+     * @type object
+     */
+    var Delete = {
+      reset: function (td) {
+        // Reset delete button to initial status.
+        $table.find('.tabledit-confirm-button').hide();
+        // Remove "active" class in delete button.
+        $table.find('.tabledit-delete-button').removeClass('active').blur();
+      },
+      submit: function (td) {
+        Delete.reset(td);
+        // Enable identifier hidden input.
+        $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
+        // Send AJAX request to server.
+        var ajaxResult = ajax(settings.buttons.delete.action);
+        // Disable identifier hidden input.
+        $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+
+        if (ajaxResult === false) {
+          return;
+        }
+
+        // Add class "deleted" to row.
+        $(td).parent('tr').addClass('tabledit-deleted-row');
+        // Hide table row.
+        $(td).parent('tr').addClass(settings.mutedClass).find('.tabledit-toolbar button:not(.tabledit-restore-button)').attr('disabled', true);
+        // Show restore button.
+        $(td).find('.tabledit-restore-button').show();
+        // Set last deleted row.
+        $lastDeletedRow = $(td).parent('tr');
+      },
+      confirm: function (td) {
+        // Reset all cells in edit mode.
+        $table.find('td.tabledit-edit-mode').each(function () {
+          Edit.reset(this);
+        });
+        // Add "active" class in delete button.
+        $(td).find('.tabledit-delete-button').addClass('active');
+        // Show confirm button.
+        $(td).find('.tabledit-confirm-button').show();
+      },
+      restore: function (td) {
+        // Enable identifier hidden input.
+        $(td).parent('tr').find('input.tabledit-identifier').attr('disabled', false);
+        // Send AJAX request to server.
+        var ajaxResult = ajax(settings.buttons.restore.action);
+        // Disable identifier hidden input.
+        $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+
+        if (ajaxResult === false) {
+          return;
+        }
+
+        // Remove class "deleted" to row.
+        $(td).parent('tr').removeClass('tabledit-deleted-row');
+        // Hide table row.
+        $(td).parent('tr').removeClass(settings.mutedClass).find('.tabledit-toolbar button').attr('disabled', false);
+        // Hide restore button.
+        $(td).find('.tabledit-restore-button').hide();
+        // Set last restored row.
+        $lastRestoredRow = $(td).parent('tr');
+      }
+    };
+
+    /**
+     * Send AJAX request to server.
+     *
+     * @param {string} action
+     */
+    function ajax(action) {
+      var serialize = $table.find('.tabledit-input').serialize()
+
+      if (!serialize) {
+        return false;
+      }
+
+      serialize += '&action=' + action;
+
+      var result = settings.onAjax(action, serialize);
+
+      if (result === false) {
+        return false;
+      }
+
+      settings.method = settings[action + 'method'];
+
+      var jqXHR = $.ajax({
+        url: settings.url,
+        type: settings.method,
+        data: serialize,
+        dataType: 'json'
+      });
+
+      // DONE callback-manipulation function - success
+      jqXHR.done(function (data, textStatus, jqXHR) {
+        // When AJAX call is successfuly
+
+        // `data` contains parsed JSON
+
+        if (action === settings.buttons.edit.action) {
+          $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+          setTimeout(function () {
+            //$lastEditedRow.removeClass(settings.warningClass);
+            $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
+          }, 1400);
+        }
+
+        settings.onSuccess(data, textStatus, jqXHR);
+
+      });
+
+      // FAIL callback-manipulation function - error
+      jqXHR.fail(function (jqXHR, textStatus, errorThrown) {
+        // When AJAX call has failed
+
+        if (action === settings.buttons.delete.action) {
+          $lastDeletedRow.removeClass(settings.mutedClass).addClass(settings.dangerClass);
+          $lastDeletedRow.find('.tabledit-toolbar button').attr('disabled', false);
+          $lastDeletedRow.find('.tabledit-toolbar .tabledit-restore-button').hide();
+        } else if (action === settings.buttons.edit.action) {
+          $lastEditedRow.addClass(settings.dangerClass);
+        }
+
+        settings.onFail(jqXHR, textStatus, errorThrown);
+
+        // Console log output
+        console.log('Tabledit Ajax fail => ' + textStatus + ' : ' + errorThrown);
+
+      });
+
+      // ALWAYS callback-manipulation function - complete
+      jqXHR.always(function () {
+        // When AJAX call is complete, will fire upon success or when error is thrown
+
+        settings.onAlways();
+
+      });
+
+      return jqXHR;
+    }
+
+    Draw.columns.identifier();
+    Draw.columns.editable();
+    Draw.columns.toolbar();
+
+    settings.onDraw();
+
+    if (settings.deleteButton) {
+      /**
+       * Delete one row.
+       *
+       * @param {object} event
+       */
+      $table.on('click', 'button.tabledit-delete-button', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          // Get current state before reset to view mode.
+          var activated = $(this).hasClass('active');
+
+          var $td = $(this).parents('td');
+
+          Delete.reset($td);
+
+          if (!activated) {
+            Delete.confirm($td);
+          }
+
+          event.handled = true;
+        }
+      });
+
+      /**
+       * Delete one row (confirm).
+       *
+       * @param {object} event
+       */
+      $table.on('click', 'button.tabledit-confirm-button', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          var $td = $(this).parents('td');
+
+          Delete.submit($td);
+
+          event.handled = true;
+        }
+      });
+    }
+
+    if (settings.restoreButton) {
+      /**
+       * Restore one row.
+       *
+       * @param {object} event
+       */
+      $table.on('click', 'button.tabledit-restore-button', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          Delete.restore($(this).parents('td'));
+
+          event.handled = true;
+        }
+      });
+    }
+
+    if (settings.editButton) {
+      /**
+       * Activate edit mode on all columns.
+       *
+       * @param {object} event
+       */
+      $table.on('click', 'button.tabledit-edit-button', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          var $button = $(this);
+
+          // Get current state before reset to view mode.
+          var activated = $button.hasClass('active');
+
+          // Change to view mode columns that are in edit mode.
+          Edit.reset($table.find('td.tabledit-edit-mode'));
+
+          if (!activated) {
+            // Change to edit mode for all columns in reverse way.
+            $($button.parents('tr').find('td.tabledit-view-mode').get().reverse()).each(function () {
+              Mode.edit(this);
+            });
+          }
+
+          event.handled = true;
+        }
+      });
+
+      /**
+       * Save edited row.
+       *
+       * @param {object} event
+       */
+      $table.on('click', 'button.tabledit-save-button', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          // Submit and update all columns.
+          Edit.submit($(this).parents('tr').find('td.tabledit-edit-mode'));
+
+          event.handled = true;
+        }
+      });
+    } else {
+      /**
+       * Change to edit mode on table td element.
+       *
+       * @param {object} event
+       */
+      $table.on(settings.eventType, 'tr:not(.tabledit-deleted-row) td.tabledit-view-mode', function (event) {
+        if (event.handled !== true) {
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          // Reset all td's in edit mode.
+          Edit.reset($table.find('td.tabledit-edit-mode'));
+
+          // Change to edit mode.
+          Mode.edit(this);
+
+          event.handled = true;
+        }
+      });
+
+      /**
+       * Change event when input is a select element.
+       */
+      $table.on('change', 'select.tabledit-input:visible', function (event) {
+        if (event.handled !== true) {
+          // Submit and update the column.
+          Edit.submit($(this).parent('td'));
+
+          event.handled = true;
+        }
+      });
+
+      /**
+       * Click event on document element.
+       *
+       * @param {object} event
+       */
+      $(document).on('click', function (event) {
+        var $editMode = $table.find('.tabledit-edit-mode');
+        // Reset visible edit mode column.
+        if (!$editMode.is(event.target) && $editMode.has(event.target).length === 0) {
+          Edit.reset($table.find('.tabledit-input:visible').parent('td'));
+        }
+      });
+    }
+
+    /**
+     * Keypress event on table element.
+     *
+     * @param {object} event
+     */
+    $table.on('keypress', function (event) {
+
+      // Get input element with focus or confirmation button.
+      var $input = $table.find('.tabledit-input:visible');
+      var $button = $table.find('.tabledit-confirm-button');
+
+      if ($input.length > 0) {
+        var $td = $input.parents('td');
+      } else if ($button.length > 0) {
+        var $td = $button.parents('td');
+      } else {
+        return;
+      }
+
+      // Key?
+      switch (event.keyCode) {
+        case 9:  // Tab.
+
+          if (!settings.editButton) {
+            Edit.submit($td);
+            Mode.edit($td.closest('td').next());
+          }
+
+          break;
+        case 13: // Enter.
+
+          // Stop, the default action of the event will not be triggered
+          event.preventDefault();
+
+          Edit.submit($td);
+
+          break;
+        case 27: // Escape.
+
+          Edit.reset($td);
+          Delete.reset($td);
+
+          break;
+      }
+    });
+
+    return this;
+  };
+}(jQuery));
