@@ -1,3 +1,13 @@
+v1.2.6 DEV (xxxx/xx/xx)
+-------------------
+- New - Different type of input Element, supported type "input", "hidden", "number", "select", "textarea"
+- New - Methods for plugin 'init' , 'destroy' ,  'update'
+- New - Option for debug mode -> debug: true.
+- New - Get token for ajax request form cookie
+- New - Attributes for textarea, supported atrributes are "rows", "cols", "maxlength", "wrap"
+- New - Count for textarea
+- Fix typo
+
 v1.2.5 (2017/08/13)
 -------------------
 - Updated 'example.php' file
