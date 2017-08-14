@@ -46,7 +46,8 @@
  *          [4, 'col4', , 'textarea', '{"rows": "3", "cols": "10", "maxlength": "200", "wrap": "hard"}'],
  *
  *          [column_index, input_name, select_type, select_options]]
- *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']]
+ *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']
+ *       ]
  *    }
  *
  */
