@@ -394,7 +394,7 @@ if (typeof jQuery === 'undefined') {
                       // Ignore attribute if not of supported type
                       input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
                     });
-                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text  + '</textarea>';
+                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text  + '</textarea><span class="count_" style="display: none;"><span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain + '</span>';
 
                     break;
 
@@ -467,6 +467,8 @@ if (typeof jQuery === 'undefined') {
           $(td).parent('tr').find('.tabledit-input.tabledit-identifier').prop('disabled', true);
           // Hide and disable input element.
           $(td).find('.tabledit-input').blur().hide().prop('disabled', true);
+          // Hide count if exist for textarea
+          $(td).find('.count_').hide();
           // Show span element.
           $(td).find('.tabledit-span').show();
           // Add "view" class and remove "edit" class in td element.
@@ -489,6 +491,11 @@ if (typeof jQuery === 'undefined') {
           var $input = $(td).find('.tabledit-input');
           // Enable and show input element.
           $input.prop('disabled', false).show();
+          // Set style for textarea
+          $(td).find('textarea').css({"resize": "none"});
+          // Show count if exist for textarea and set style
+          $(td).find('.count_').css({"color": "#CCC", "display": "block", "float": "right"}).show();
+          $(td).find('.countno_').html('...');
           // Focus on input element.
           if (settings.autoFocus) {
             $input.focus();
@@ -836,6 +843,20 @@ if (typeof jQuery === 'undefined') {
         }
       });
 
+      /**
+       * Keydown event on table textarea.
+       *
+       */
+      $('textarea').on('change keyup keydown', function() {
+        var length = $(this).val().length;
+        // Get maxlength attribute
+        var maxLength =  $(this).attr('maxlength');
+        // Check the value and get the length of it, store it in a variable
+        var length = maxLength-length;
+        // Show result
+        $(this).parent().find('.countno_').text(length);
+      });
+
       return this;
 
     },
@@ -996,7 +1017,8 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Confirm',
       btn_save: 'Save',
       btn_restore: 'Restore',
-      txt_action: 'Actions'
+      txt_action: 'Actions',
+      txt_remain: 'characters remaining'
     },
     de: {
       btn_edit: 'Editieren',
@@ -1004,7 +1026,8 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Best&auml;tigen',
       btn_save: 'Speichern',
       btn_restore: 'Inhalt',
-      txt_action: 'Aktion'
+      txt_action: 'Aktion',
+      txt_remain: ''
     },
     fr: {
       btn_edit: 'Éditer',
@@ -1012,7 +1035,8 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Confirmer',
       btn_save: 'Sauver',
       btn_restore: 'Restaurer',
-      txt_action: 'Mode'
+      txt_action: 'Mode',
+      txt_remain: ''
     },
     cz: {
       btn_edit: 'Editovat',
@@ -1020,7 +1044,8 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Potvrdit',
       btn_save: 'Uložit',
       btn_restore: 'Obnovit',
-      txt_action: 'Akce'
+      txt_action: 'Akce',
+      txt_remain: 'znak(ů) zbývá'
     }
   };
 
