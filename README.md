@@ -93,5 +93,6 @@ https://bluesatkv.github.io/jquery-tabledit/#documentation
 
 
 ## Changelog
-See CHANGELOG.md file.
+See CHANGELOG.md on 
+https://github.com/BluesatKV/jquery-tabledit/blob/master/CHANGELOG.md
 
