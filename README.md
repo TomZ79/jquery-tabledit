@@ -1,8 +1,10 @@
 # jQuery-Tabledit v1.2.6
-Inline editor for HTML tables compatible with Bootstrap.
+Inline editor for HTML tables compatible with Bootstrap. Tabledit use Ajax for saving new row and for Edit and Delete row.
 
+#### You can insert different types of tags
 ![img02](https://user-images.githubusercontent.com/20857152/29292559-cbcca5ec-8147-11e7-863a-758510e0effa.png)
 
+#### You can add new row to table
 ![img01](https://user-images.githubusercontent.com/20857152/29292558-cbca754c-8147-11e7-82c8-1704cc7d9a7b.png)
 
 ## Basic usage
