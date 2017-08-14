@@ -1,4 +1,4 @@
-v1.2.6 DEV (xxxx/xx/xx)
+v1.2.6 (2017/08/14)
 -------------------
 - New - Different type of input Element, supported type "input", "hidden", "number", "select", "textarea"
 - New - Methods for plugin 'init' , 'destroy' ,  'update'
