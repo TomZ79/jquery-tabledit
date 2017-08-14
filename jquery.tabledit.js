@@ -44,17 +44,18 @@ if (typeof jQuery === 'undefined') {
 // TABLE EDIT PLUGIN WITH METHOD
 /**
  * $('#my_table').Tabledit(); -> calls the init method
- * $('#my_table').Tabledit({  -> calls the init method
+ * $('#my_table').Tabledit({  -> calls the init method with user options
  *    lang : 'en'
  * });
  * $('#my_table').Tabledit('destroy'); -> calls the destroy method
- * $('#my_table').Tabledit('update', {lang: 'de'}); -> calls the update method with new options
+ * $('#my_table').Tabledit('update'); -> calls the update method with init options
+ * $('#my_table').Tabledit('update', {lang: 'de'}); -> calls the update method with new user options
  */
 (function ($) {
   'use strict';
 
   //A variable to save the setting data under.
-  var dataPrefix = '_Tabledit';
+  var dataPrefix = '_TableditData';
 
   // Methods
   var methods = {
@@ -392,7 +393,7 @@ if (typeof jQuery === 'undefined') {
                                        </div></div>';
 
               // Add toolbar column cells.
-              $table.find('tbody>tr').append('<td style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+              $table.find('tbody>tr').append('<td class="toolbar" style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
             }
           }
         }
@@ -790,21 +791,31 @@ if (typeof jQuery === 'undefined') {
 
     },
     update: function (options) {
+
+      // jQuery wrapper for clicked element
+      var $table = this;
+
       // Reload options by using the 'data' function
       var defaults = $(this).data(dataPrefix);
 
-      // Overwrite relaod options with user provided ones and merge them into "options" - recursively
+      // Overwrite reload options with user provided ones and merge them into "options" - recursively
       var options = $.extend(true, defaults, options);
 
       // Output to console with data
       if (options.debug) console.log('Tabledit Update -> Element:', $(this));
       if (options.debug) console.log('Tabledit Update -> Settings: ', options);
 
-      // Call 'init' method function
+      // Remove toolbar column header
+      $table.find('.tabledit-toolbar-column').remove();
+      // Remove toolbar
+      $table.find('.toolbar').remove();
+
+      // Call 'init' method function with options
       methods.init.apply(this, [options]);
     }
   };
 
+  // CALL PLUGIN METHOD
   $.fn.Tabledit = function (method) {
     if (methods[method]) {
       return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -946,6 +957,5 @@ if (typeof jQuery === 'undefined') {
       txt_action: 'Akce'
     }
   };
-
 
 })(jQuery);
