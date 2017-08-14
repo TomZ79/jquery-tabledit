@@ -15,13 +15,17 @@
  * @version 1.2.6 (https://github.com/BluesatKV/jquery-tabledit)
  * @author BluesatKV
  *
- * REQUEST USER OPTIONS
+ * REQUESTED USER OPTIONS
  * --------------------
  * // Example #1
  *
  *  columns: {
  *
  *    // Column used to identify table row.
+ *    //
+ *    //  column_index - index of column in table 0, 1, 2, 3 etc...
+ *    //  input_name - name of column in your DB (MySQL)
+ *    //
  *    // [column_index, input_name]
  *    identifier: [0, 'id'],
  *
@@ -39,7 +43,7 @@
  *          [3, 'col3', 'number'],
  *
  *          // [[column_index, input_name, textarea_type, textarea_options] -> supported attributes "rows", "cols", "maxlength", "wrap"
- *          [4, 'col4', , 'textarea', '{rows: 4}'],
+ *          [4, 'col4', , 'textarea', '{"rows": "3", "cols": "10", "maxlength": "200", "wrap": "hard"}'],
  *
  *          [column_index, input_name, select_type, select_options]]
  *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']]
@@ -71,6 +75,7 @@ if (typeof jQuery === 'undefined') {
   var methods = {
     init: function (options) {
 
+      // Check if element is 'table'
       if (!this.is('table')) {
         throw new Error('Tabledit only works when applied to a table.');
       }
