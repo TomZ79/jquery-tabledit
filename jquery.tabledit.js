@@ -264,7 +264,7 @@ $.Tabledit = {
      * @param {string} action
      */
     function ajax(action) {
-      var serialize = $table.find('.tabledit-input').serialize()
+      var serialize = $table.find('.tabledit-input').serialize();
 
       if (!serialize) {
         return false;
