@@ -45,10 +45,10 @@ if (typeof jQuery === 'undefined') {
 /**
  * $('#my_table').Tabledit(); -> calls the init method
  * $('#my_table').Tabledit({  -> calls the init method
- *    foo : 'bar'
+ *    lang : 'en'
  * });
- * $('#my_table').Tabledit('hide'); -> calls the hide method
- * $('#my_table').Tabledit('update', 'This is the new tooltip content!'); -> calls the update method
+ * $('#my_table').Tabledit('destroy'); -> calls the destroy method
+ * $('#my_table').Tabledit('update', {lang: 'de'}); -> calls the update method with new options
  */
 (function ($) {
   'use strict';
@@ -126,6 +126,11 @@ if (typeof jQuery === 'undefined') {
       } else {
         var restoreButtonHtml = $table.Tabledit.langs[settings.lang].btn_restore;
       }
+
+      // Output to console with data
+      if (options.debug) console.log('Tabledit Init -> Element:', $(this));
+      if (options.debug) console.log('Tabledit Init -> dataPrefix:', dataPrefix);
+      if (options.debug) console.log('Tabledit Init -> Settings: ', settings);
 
       /**
        * Escape HTML
@@ -777,16 +782,23 @@ if (typeof jQuery === 'undefined') {
 
       return this;
 
-
     },
     destroy: function () {
 
+      // Output to console with data
+      if (options.debug) console.log('Tabledit Destroy -> Element:', $(this));
+
     },
     update: function (options) {
-      // Reload settings by using the 'data' function
-      var options = $(this).data(dataPrefix);
+      // Reload options by using the 'data' function
+      var defaults = $(this).data(dataPrefix);
 
-      //console.log(JSON.stringify(options));
+      // Overwrite relaod options with user provided ones and merge them into "options" - recursively
+      var options = $.extend(true, defaults, options);
+
+      // Output to console with data
+      if (options.debug) console.log('Tabledit Update -> Element:', $(this));
+      if (options.debug) console.log('Tabledit Update -> Settings: ', options);
 
       // Call 'init' method function
       methods.init.apply(this, [options]);
@@ -833,6 +845,8 @@ if (typeof jQuery === 'undefined') {
     autoFocus: true,
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
+    // Debug mode
+    debug: 'false',
     // Escape Html - convert hmtl character
     escapehtml: true,
     // Activate edit button instead of spreadsheet style
