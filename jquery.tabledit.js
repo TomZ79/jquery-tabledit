@@ -15,7 +15,7 @@
  * @version 1.2.6 (https://github.com/BluesatKV/jquery-tabledit)
  * @author BluesatKV
  *
- * REQUESTED USER OPTIONS
+ * REQUIRED USER OPTIONS
  * --------------------
  * // Example #1
  *
