@@ -784,11 +784,20 @@ if (typeof jQuery === 'undefined') {
       return this;
 
     },
-    destroy: function () {
+    destroy: function (options) {
+
+      // jQuery wrapper for clicked element
+      var $table = this;
 
       // Output to console with data
       if (options.debug) console.log('Tabledit Destroy -> Element:', $(this));
 
+      // Remove toolbar column header
+      $table.find('.tabledit-toolbar-column').remove();
+      // Remove toolbar
+      $table.find('.toolbar').remove();
+
+      return;
     },
     update: function (options) {
 
@@ -805,10 +814,12 @@ if (typeof jQuery === 'undefined') {
       if (options.debug) console.log('Tabledit Update -> Element:', $(this));
       if (options.debug) console.log('Tabledit Update -> Settings: ', options);
 
-      // Remove toolbar column header
-      $table.find('.tabledit-toolbar-column').remove();
-      // Remove toolbar
-      $table.find('.toolbar').remove();
+      // Get only debug options in all 'options' and create object from json
+      // This is only one options for destroy method calling from 'update' method
+      var debugoption = $.parseJSON(JSON.stringify(options, ['debug']));
+
+      // Call 'init' method function with options
+      methods.destroy.apply(this, [debugoption]);
 
       // Call 'init' method function with options
       methods.init.apply(this, [options]);
