@@ -25,15 +25,25 @@
  *    // [column_index, input_name]
  *    identifier: [0, 'id'],
  *
- *    // Columns to transform in editable cells.
- *    // [[column_index, input_name, input_type], [column_index, input_name, input_type, select_options]]
+ *    // Columns to transform in editable cells -> supported type "input", "hidden", "number", "select", "textarea"
+ *
  *    editable: [
+ *
+ *          // [[column_index, input_name, input_type_text]
  *          [1, 'col1', 'input'],
+ *
+ *          // [[column_index, input_name, input_type_hidden]
  *          [2, 'col1', 'hidden'],
+ *
+ *          // [[column_index, input_name, input_type_number]
  *          [3, 'col3', 'number'],
- *          [4, 'col4', 'textarea'],
+ *
+ *          // [[column_index, input_name, textarea_type, textarea_options] -> supported attributes "rows", "cols", "maxlength", "wrap"
+ *          [4, 'col4', , 'textarea', '{rows: 4}'],
+ *
+ *          [column_index, input_name, select_type, select_options]]
  *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']]
- *  }
+ *    }
  *
  */
 
@@ -318,17 +328,23 @@ if (typeof jQuery === 'undefined') {
                 var span = '<span class="tabledit-span">' + text + '</span>';
                 var input;
 
-                // List of valid values for columnType
+                // Section for settings of valid types, values, attributes and other ...
+                // -----------------------------------
+                // List of valid types for columnType
                 var supportedTypes = ["input", "hidden", "number", "select", "textarea"];
+                // List of valid attributes for columnType 'textarea'
+                var supportedAttrTextarea = ["rows", "cols", "maxlength", "wrap"];
+                // -----------------------------------
 
                 // Get type from colums user definition
                 var columnType = settings.columns.editable[i][2];
 
-                // Ignore element if not of supported type
+                // Set default element if not of supported type
                 if ($.inArray(columnType, supportedTypes) == -1) {
                   columnType = 'input';
                 }
 
+                // Create element by type
                 switch (columnType) {
                   case 'input':
 
@@ -356,7 +372,7 @@ if (typeof jQuery === 'undefined') {
                       input = '<select class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>';
 
                       // Create options for select element.
-                      $.each(jQuery.parseJSON(settings.columns.editable[i][3]), function (index, value) {
+                      $.each($.parseJSON(settings.columns.editable[i][3]), function (index, value) {
                         value = $.trim(value);
                         if (text === value) {
                           input += '<option value="' + index + '" selected>' + value + '</option>';
@@ -373,7 +389,12 @@ if (typeof jQuery === 'undefined') {
                   case 'textarea':
 
                     // Create textarea element.
-                    input = '<textarea rows="2" class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text + '</textarea>';
+                    input = '<textarea ';
+                    $.each($.parseJSON(settings.columns.editable[i][3]), function(index, value) {
+                      // Ignore attribute if not of supported type
+                      input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
+                    });
+                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text  + '</textarea>';
 
                     break;
 
