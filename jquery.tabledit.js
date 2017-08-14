@@ -68,6 +68,7 @@ if (typeof jQuery === 'undefined') {
       // jQuery wrapper for clicked element
       var $table = this;
 
+      // Function - check if value isn't ...
       var notNull = function (value) {
         return value !== undefined || value !== null || value !== '';
       };
@@ -161,6 +162,8 @@ if (typeof jQuery === 'undefined') {
        * @param {string} action
        */
       function ajax(action) {
+        var jqXHR;
+        var result;
         var serialize = $table.find('.tabledit-input').serialize();
 
         if (!serialize) {
@@ -169,7 +172,7 @@ if (typeof jQuery === 'undefined') {
 
         serialize += '&action=' + action;
 
-        var result = settings.onAjax(action, serialize);
+        result = settings.onAjax(action, serialize);
 
         if (result === false) {
           return false;
@@ -177,7 +180,38 @@ if (typeof jQuery === 'undefined') {
 
         settings.method = settings[action + 'method'];
 
-        var jqXHR = $.ajax({
+        // AJAX SETUP CSRF TOKEN
+        function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+              var cookie = jQuery.trim(cookies[i]);
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+
+        function csrfSafeMethod(method) {
+          // these HTTP methods do not require CSRF protection
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+          beforeSend: function(xhr, s) {
+            // Setting the token on the AJAX request
+            if (!csrfSafeMethod(s.type) && !this.crossDomain) {
+              xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+          }
+        });
+
+        // AJAX
+        jqXHR = $.ajax({
           url: settings.url,
           type: settings.method,
           data: serialize,
