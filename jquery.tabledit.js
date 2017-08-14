@@ -949,7 +949,7 @@ if (typeof jQuery === 'undefined') {
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
     // Debug mode
-    debug: 'false',
+    debug: false,
     // Escape Html - convert hmtl character
     escapehtml: true,
     // Activate edit button instead of spreadsheet style
