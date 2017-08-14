@@ -938,7 +938,7 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Best&auml;tigen',
       btn_save: 'Speichern',
       btn_restore: 'Inhalt',
-      txt_action: ''
+      txt_action: 'Aktion'
     },
     fr: {
       btn_edit: 'Éditer',
@@ -946,7 +946,7 @@ if (typeof jQuery === 'undefined') {
       btn_confirm: 'Confirmer',
       btn_save: 'Sauver',
       btn_restore: 'Restaurer',
-      txt_action: ''
+      txt_action: 'Mode'
     },
     cz: {
       btn_edit: 'Editovat',
