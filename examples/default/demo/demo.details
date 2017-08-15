@@ -1,13 +1,14 @@
 /*
 ---
-name: Request.HTML - jsFiddle/Github integration demo
-description: jsFiddle demo hosted on Github using HTML Request to get Ajax data
+name: Jquery Tabledit / Default
+description: Inline Editor Table
 authors:
-  - Piotr Zalewa
+  - BluesatKV
 resources:
-  - /js/empty.js
-  - /css/normalize.css
-normalize_css: yes
-lang_css: SCSS
+  - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
+  - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js
+  - https://cdn.rawgit.com/BluesatKV/jquery-tabledit/c1759e6c/jquery.tabledit.js
+normalize_css: no
+lang_css: CSS
 ...
 */
