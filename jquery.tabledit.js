@@ -1,5 +1,5 @@
 /*!
- * Tabledit v1.2.3 (https://github.com/markcell/jQuery-Tabledit)
+ * Tabledit v1.2.3 ()
  * Copyright (c) 2015 Celso Marques
  * Licensed under MIT (https://github.com/markcell/jQuery-Tabledit/blob/master/LICENSE)
  */
@@ -7,13 +7,15 @@
 /**
  * @description Inline editor for HTML tables compatible with Bootstrap
  * @version 1.2.3
- * @author Celso Marques
+ * @author  Celso Marques
+ * @link    https://github.com/markcell/jQuery-Tabledit
  */
 
 /**
  * The modified version
- * @version 1.2.6 (https://github.com/BluesatKV/jquery-tabledit)
- * @author BluesatKV
+ * @version 1.2.7 DEV
+ * @author  BluesatKV
+ * @link    https://github.com/BluesatKV/jquery-tabledit
  *
  * REQUIRED USER OPTIONS
  * --------------------
@@ -217,8 +219,9 @@ if (typeof jQuery === 'undefined') {
           // these HTTP methods do not require CSRF protection
           return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
         }
+
         $.ajaxSetup({
-          beforeSend: function(xhr, s) {
+          beforeSend: function (xhr, s) {
             // Setting the token on the AJAX request
             if (!csrfSafeMethod(s.type) && !this.crossDomain) {
               xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
@@ -396,11 +399,11 @@ if (typeof jQuery === 'undefined') {
 
                     // Create textarea element.
                     input = '<textarea ';
-                    $.each($.parseJSON(settings.columns.editable[i][3]), function(index, value) {
+                    $.each($.parseJSON(settings.columns.editable[i][3]), function (index, value) {
                       // Ignore attribute if not of supported type
                       input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
                     });
-                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text  + '</textarea><span class="count_" style="display: none;"><span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain + '</span>';
+                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text + '</textarea><span class="count_" style="display: none;"><span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain + '</span>';
 
                     break;
 
@@ -853,12 +856,12 @@ if (typeof jQuery === 'undefined') {
        * Keydown event on table textarea.
        *
        */
-      $('textarea').on('change keyup keydown', function() {
+      $('textarea').on('change keyup keydown', function () {
         var length = $(this).val().length;
         // Get maxlength attribute
-        var maxLength =  $(this).attr('maxlength');
+        var maxLength = $(this).attr('maxlength');
         // Check the value and get the length of it, store it in a variable
-        var length = maxLength-length;
+        var length = maxLength - length;
         // Show result
         $(this).parent().find('.countno_').text(length);
       });
@@ -889,8 +892,15 @@ if (typeof jQuery === 'undefined') {
       // Reload options by using the 'data' function
       var defaults = $(this).data(dataPrefix);
 
+      // Log output if 'data' not exists
+      if (!defaults) {
+        console.log('Tabledit Update -> Data: EditTable must be initialized before setting options');
+        return;
+      }
+
       // Overwrite reload options with user provided ones and merge them into "options" - recursively
       var options = $.extend(true, defaults, options);
+
 
       // Output to console with data
       if (options.debug) console.log('Tabledit Update -> Element:', $(this));
