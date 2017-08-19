@@ -246,10 +246,10 @@ if (typeof jQuery === 'undefined') {
 
           if (textStatus == 'success') {
             if (action === settings.buttons.edit.action) {
-              $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.warningClass);
+              $lastEditedRow.removeClass(settings.dangerClass).addClass(settings.successClass);
               setTimeout(function () {
-                //$lastEditedRow.removeClass(settings.warningClass);
-                $table.find('tr.' + settings.warningClass).removeClass(settings.warningClass);
+                //$lastEditedRow.removeClass(settings.successClass);
+                $table.find('tr.' + settings.successClass).removeClass(settings.successClass);
               }, 1400);
             }
 
@@ -953,7 +953,7 @@ if (typeof jQuery === 'undefined') {
     // Class for row when ajax request fails
     dangerClass: 'danger',
     // Class for row when save changes
-    warningClass: 'warning',
+    successClass: 'success',
     // Class for row when is deleted
     mutedClass: 'text-muted',
     // Trigger to change for edit mode
