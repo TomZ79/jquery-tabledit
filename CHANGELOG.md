@@ -1,3 +1,7 @@
+v1.2.7 DEV (xxxx/xx/xx)
+-------------------
+- Add JavaScript RegEx (Trim ALL Whitespace)
+
 v1.2.6 (2017/08/14)
 -------------------
 - New - Different type of input Element, supported type "input", "hidden", "number", "select", "textarea"
