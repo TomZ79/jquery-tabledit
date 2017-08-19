@@ -328,7 +328,8 @@ if (typeof jQuery === 'undefined') {
               var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
 
               $td.each(function () {
-                // Get text of this cell.
+                // Get text of this cell
+                // RegEx (Trim Leading and Trailing) -> Before: "   a b    c d e " / After: "a b    c d e"
                 var text = $.trim($(this).text().replace(/(^\s+|\s+$)/g, ''));
                 var text = settings.escapehtml ? escapeHTML(text) : text;
 
