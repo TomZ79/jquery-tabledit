@@ -1,6 +1,12 @@
 v1.2.7 DEV (xxxx/xx/xx)
 -------------------
 - Add JavaScript RegEx (Trim Leading and Trailing)
+- Change name class for row when save changes
+  
+  Old name -> warningClass: 'warning'
+  New name -> successClass: 'success'
+  
+
 
 v1.2.6 (2017/08/14)
 -------------------
