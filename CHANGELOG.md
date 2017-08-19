@@ -1,6 +1,6 @@
 v1.2.7 DEV (xxxx/xx/xx)
 -------------------
-- Add JavaScript RegEx (Trim ALL Whitespace)
+- Add JavaScript RegEx (Trim Leading and Trailing)
 
 v1.2.6 (2017/08/14)
 -------------------
