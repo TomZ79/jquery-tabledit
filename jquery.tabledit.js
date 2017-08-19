@@ -326,7 +326,7 @@ if (typeof jQuery === 'undefined') {
           },
           editable: function () {
             for (var i = 0; i < settings.columns.editable.length; i++) {
-              var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
+              var $td = $table.find('tbody td:not(".' + settings.noEditClass + '")').filter(':nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
 
               $td.each(function () {
                 // Get text of this cell
@@ -956,6 +956,8 @@ if (typeof jQuery === 'undefined') {
     successClass: 'success',
     // Class for row when is deleted
     mutedClass: 'text-muted',
+    // Class for prohibiting cell editing
+    noEditClass: 'noedit',
     // Trigger to change for edit mode
     eventType: 'click',
     // Change the name of attribute in td element for the row identifier
