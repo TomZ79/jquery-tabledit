@@ -306,11 +306,12 @@ if (typeof jQuery === 'undefined') {
               $table.find('th:nth-child(' + parseInt(settings.columns.identifier[0]) + 1 + '), tbody td:nth-child(' + parseInt(settings.columns.identifier[0]) + 1 + ')').hide();
             }
 
-            var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
+            // var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
+            var $td = $table.find('tbody tr:not(".' + settings.noEditClass + '") td:not(".' + settings.noEditClass + '")').filter(':nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
 
             $td.each(function () {
               // Get text of this cell.
-              var text = $.trim($(this).text().replace(/\s+/g, ''));
+              var text = $.trim($(this).text().replace(/^\s+|\s+$/g, ''));
               var text = settings.escapehtml ? escapeHTML(text) : text;
 
               // Create hidden input with row identifier.
@@ -326,7 +327,7 @@ if (typeof jQuery === 'undefined') {
           },
           editable: function () {
             for (var i = 0; i < settings.columns.editable.length; i++) {
-              var $td = $table.find('tbody td:not(".' + settings.noEditClass + '")').filter(':nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
+              var $td = $table.find('tbody tr:not(".' + settings.noEditClass + '") td:not(".' + settings.noEditClass + '")').filter(':nth-child(' + (parseInt(settings.columns.editable[i][0]) + 1) + ')');
 
               $td.each(function () {
                 // Get text of this cell
@@ -463,8 +464,10 @@ if (typeof jQuery === 'undefined') {
                                            ' + restoreButton + '\n\
                                        </div></div>';
 
-              // Add toolbar column cells.
-              $table.find('tbody>tr').append('<td class="toolbar" style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+              // Add toolbar column cells for normal cell
+              $table.find('tbody > tr:not(".' + settings.noEditClass + '")').append('<td class="toolbar" style="white-space: nowrap; width: 1%;">' + toolbar + '</td>');
+              // Add toolbar column with a ban on row editing
+              $table.find('tbody > tr.' + settings.noEditClass).append('<td class="toolbar" style="white-space: nowrap; width: 1%;"></td>');
             }
           }
         }
