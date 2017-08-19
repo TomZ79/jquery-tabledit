@@ -329,7 +329,7 @@ if (typeof jQuery === 'undefined') {
 
               $td.each(function () {
                 // Get text of this cell.
-                var text = $.trim($(this).text().replace(/\s+/g, ''));
+                var text = $.trim($(this).text().replace(/(^\s+|\s+$)/g, ''));
                 var text = settings.escapehtml ? escapeHTML(text) : text;
 
                 console.log('text: "' + text + '"');
