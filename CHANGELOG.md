@@ -3,14 +3,14 @@ v1.2.7 DEV (xxxx/xx/xx)
 - Add JavaScript RegEx (Trim Leading and Trailing)
 - Change name class for row when save changes
   
-  Old name -> warningClass: 'warning'
+  Old name -> `warningClass: 'warning'`
   
-  New name -> successClass: 'success'
+  New name -> `successClass: 'success'`
 - Add Class for prohibiting cell editing
   
   Default -> `noEditClass: 'noedit'`
   
-  E.G: '`<td  class="noedit">Some data</td>`  '
+  E.G: '`<td  class="noedit">Some Text</td>`  '
 
 
 v1.2.6 (2017/08/14)
