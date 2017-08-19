@@ -308,9 +308,13 @@ if (typeof jQuery === 'undefined') {
             var $td = $table.find('tbody td:nth-child(' + (parseInt(settings.columns.identifier[0]) + 1) + ')');
 
             $td.each(function () {
+              // Get text of this cell.
+              var text = $.trim($(this).text().replace(/\s+/g, ''));
+              var text = settings.escapehtml ? escapeHTML(text) : text;
+
               // Create hidden input with row identifier.
-              var span = '<span class="tabledit-span tabledit-identifier">' + $.trim($(this).text()) + '</span>';
-              var input = '<input class="tabledit-input tabledit-identifier" type="hidden" name="' + settings.columns.identifier[1] + '" value="' + $.trim($(this).text()) + '" disabled>';
+              var span = '<span class="tabledit-span tabledit-identifier">' + text + '</span>';
+              var input = '<input class="tabledit-input tabledit-identifier" type="hidden" name="' + settings.columns.identifier[1] + '" value="' + text + '" disabled>';
 
               // Add elements to table cell.
               $(this).html(span + input);
@@ -325,8 +329,10 @@ if (typeof jQuery === 'undefined') {
 
               $td.each(function () {
                 // Get text of this cell.
-                var text = $.trim($(this).text());
-                var text = settings.escapehtml ? escapeHTML($(this).text()) : text;
+                var text = $.trim($(this).text().replace(/\s+/g, ''));
+                var text = settings.escapehtml ? escapeHTML(text) : text;
+
+                console.log('text: "' + text + '"');
 
                 // Add pointer as cursor.
                 if (!settings.editButton) {
@@ -383,6 +389,7 @@ if (typeof jQuery === 'undefined') {
                       // Create options for select element.
                       $.each($.parseJSON(settings.columns.editable[i][3]), function (index, value) {
                         value = $.trim(value);
+
                         if (text === value) {
                           input += '<option value="' + index + '" selected>' + value + '</option>';
                         } else {
