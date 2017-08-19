@@ -106,8 +106,8 @@ if (typeof jQuery === 'undefined') {
         options.lang = $table.Tabledit.defaults.lang;
       }
 
-      // Overwrite default options with user provided ones and merge them into "settings" - recursively
-      var settings = $.extend(true, $table.Tabledit.defaults, options);
+      // Overwrite default options with user provided ones and merge them into "settings" object for multiple instance
+      var settings = $.extend({}, $table.Tabledit.defaults, options);
 
       // Save settings by using the 'data' function
       $(this).data(dataPrefix, $.extend({}, $table.Tabledit.defaults, options || {}));
@@ -148,9 +148,10 @@ if (typeof jQuery === 'undefined') {
       }
 
       // Output to console with data
-      if (options.debug) console.log('Tabledit Init -> Element:', $(this));
+      if (options.debug) console.log('Tabledit Init -> Element:', $table);
       if (options.debug) console.log('Tabledit Init -> dataPrefix:', dataPrefix);
       if (options.debug) console.log('Tabledit Init -> Settings: ', settings);
+      if (options.debug) console.log('Tabledit Init: -----------------------------------');
 
       /**
        * Escape HTML
@@ -332,8 +333,6 @@ if (typeof jQuery === 'undefined') {
                 // RegEx (Trim Leading and Trailing) -> Before: "   a b    c d e " / After: "a b    c d e"
                 var text = $.trim($(this).text().replace(/(^\s+|\s+$)/g, ''));
                 var text = settings.escapehtml ? escapeHTML(text) : text;
-
-                console.log('text: "' + text + '"');
 
                 // Add pointer as cursor.
                 if (!settings.editButton) {
