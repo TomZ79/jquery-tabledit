@@ -520,6 +520,14 @@ if (typeof jQuery === 'undefined') {
             // in case if disableSelectAutoFocus is set to false focus will not be set only for select element
             if(!$input.is("select") || !settings.disableSelectAutoFocus) {
               $input.focus();    
+              
+              // setting cursor position to end
+              if (settings.cursorPosition == 'end') {
+                $input.putCursorAtEnd()
+                .on("focus", function() { 
+                  searchInput.putCursorAtEnd()
+                });
+              }
             }
           }
           // Add "edit" class and remove "view" class in td element.
@@ -930,6 +938,36 @@ if (typeof jQuery === 'undefined') {
       methods.init.apply(this, [options]);
     }
   };
+  
+  // Function to set cursor at the end
+  jQuery.fn.putCursorAtEnd = function() {
+    return this.each(function() {
+      var $el = $(this),
+          el = this;
+          
+      if (!$el.is(":focus")) {
+       $el.focus();
+      }
+      
+      if (el.setSelectionRange) 
+      {
+        var len = $el.val().length * 2;
+        
+        // Timeout seems to be required for Blink
+        setTimeout(function() {
+          el.setSelectionRange(len, len);
+        }, 1);
+      } 
+      else 
+      {
+        //fallback
+        $el.val($el.val());
+      }
+
+      // Scroll to the bottom, in case we're in a tall textarea
+      this.scrollTop = 999999;
+    });
+  };
 
   // CALL PLUGIN METHOD
   $.fn.Tabledit = function (method) {
@@ -974,6 +1012,8 @@ if (typeof jQuery === 'undefined') {
     autoFocus: true,
     // Disable autofocus for select only. incase select is a js plugin like select2
     disableSelectAutoFocus: false,
+    // Set the Cursor position to start or end in textbox
+    cursorPosition: 'start',
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
     // Debug mode
