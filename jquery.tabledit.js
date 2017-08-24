@@ -525,7 +525,7 @@ if (typeof jQuery === 'undefined') {
               if (settings.cursorPosition == 'end') {
                 $input.putCursorAtEnd()
                 .on("focus", function() { 
-                  searchInput.putCursorAtEnd()
+                  $input.putCursorAtEnd()
                 });
               }
             }
