@@ -517,7 +517,10 @@ if (typeof jQuery === 'undefined') {
           $(td).find('.countno_').html('...');
           // Focus on input element.
           if (settings.autoFocus) {
-            $input.focus();
+            // in case if disableSelectAutoFocus is set to false focus will not be set only for select element
+            if(!$input.is("select") || !settings.disableSelectAutoFocus) {
+              $input.focus();    
+            }
           }
           // Add "edit" class and remove "view" class in td element.
           $(td).addClass('tabledit-edit-mode').removeClass('tabledit-view-mode');
@@ -969,6 +972,8 @@ if (typeof jQuery === 'undefined') {
     hideIdentifier: false,
     // Activate focus on first input of a row when click in save button
     autoFocus: true,
+    // Disable autofocus for select only. incase select is a js plugin like select2
+    disableSelectAutoFocus: false,
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
     // Debug mode
