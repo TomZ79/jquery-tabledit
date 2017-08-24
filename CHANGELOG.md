@@ -10,7 +10,9 @@ v1.2.7 DEV (xxxx/xx/xx)
   
   Default -> `noEditClass: 'noedit'`
   
-  E.G: '`<td  class="noedit">Some Text</td>`  '
+  E.G: `<td class="noedit">Some Text</td>`
+  
+- Automatically setting CSRFToken from cookie csrftoken from sending method.
 
 
 v1.2.6 (2017/08/14)

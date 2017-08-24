@@ -250,7 +250,7 @@ if (typeof jQuery === 'undefined') {
               setTimeout(function () {
                 //$lastEditedRow.removeClass(settings.successClass);
                 $table.find('tr.' + settings.successClass).removeClass(settings.successClass);
-              }, 1400);
+              }, 1500);
             }
 
             // Initiate save successful custom callback
