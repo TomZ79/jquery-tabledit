@@ -624,6 +624,12 @@ if (typeof jQuery === 'undefined') {
           $(td).find('.tabledit-restore-button').show();
           // Set last deleted row.
           $lastDeletedRow = $(td).parent('tr');
+          
+          // Hiding the deleted row
+          if(settings.hideDeletedRow == true && settings.restoreButton == false)
+          {
+            $lastDeletedRow.hide("slow");
+          }
         },
         confirm: function (td) {
           // Reset all cells in edit mode.
@@ -1014,6 +1020,8 @@ if (typeof jQuery === 'undefined') {
     disableSelectAutoFocus: false,
     // Set the Cursor position to start or end in textbox
     cursorPosition: 'start',
+    // Hide the deleted row after its deleted.
+    hideDeletedRow: false,
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
     // Debug mode
