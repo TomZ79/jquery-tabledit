@@ -13,6 +13,7 @@ v1.2.7 DEV (xxxx/xx/xx)
   E.G: `<td class="noedit">Some Text</td>`
   
 - Automatically setting CSRFToken from cookie csrftoken from sending method.
+- Fix count of character for textarea element.
 
 
 v1.2.6 (2017/08/14)

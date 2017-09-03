@@ -405,13 +405,33 @@ if (typeof jQuery === 'undefined') {
                     break;
                   case 'textarea':
 
+                    var counttext;
+
                     // Create textarea element.
                     input = '<textarea ';
-                    $.each($.parseJSON(settings.columns.editable[i][3]), function (index, value) {
-                      // Ignore attribute if not of supported type
-                      input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
-                    });
-                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text + '</textarea><span class="count_" style="display: none;"><span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain + '</span>';
+
+                    // Check if exists the third parameter of editable array.
+                    if (typeof settings.columns.editable[i][3] !== 'undefined') {
+
+                      $.each($.parseJSON(settings.columns.editable[i][3]), function (index, value) {
+
+                        // Ignore attribute if not of supported type
+                        input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
+
+                        // Check if maxlength attribute exists and set text to character count
+                        if (index == 'maxlength' && value.length > 0 ) {
+                          counttext = ($table.Tabledit.langs[settings.lang].txt_allowchar).replace('%s', value) + ' | <span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain;
+                        } else {
+                          counttext = $table.Tabledit.langs[settings.lang].txt_nolimit;
+                        }
+
+                      });
+
+                    } else {
+                      counttext = $table.Tabledit.langs[settings.lang].txt_nolimit;
+                    }
+
+                    input += ' class="tabledit-input ' + settings.inputClass + '" name="' + settings.columns.editable[i][1] + '" style="display: none;" disabled>' + text + '</textarea><span class="count_" style="display: none;">' + counttext + '</span>';
 
                     break;
 
@@ -870,10 +890,15 @@ if (typeof jQuery === 'undefined') {
         var length = $(this).val().length;
         // Get maxlength attribute
         var maxLength = $(this).attr('maxlength');
-        // Check the value and get the length of it, store it in a variable
-        var length = maxLength - length;
-        // Show result
-        $(this).parent().find('.countno_').text(length);
+        // For some browsers, `attr` is undefined; for others, `attr` is false. Check for both.
+        if (typeof maxLength !== typeof undefined && maxLength !== false) {
+          if (maxLength.length > 0) {
+            // Check the value and get the length of it, store it in a variable
+            var length = maxLength - length;
+            // Show result
+            $(this).parent().find('.countno_').text(length);
+          }
+        }
       });
 
       return this;
@@ -1035,7 +1060,7 @@ if (typeof jQuery === 'undefined') {
     onAjax: function () {
       return;
     }
-  }
+  };
 
   // LANGUAGE/LOCALIZATION
   $.fn.Tabledit.langs = {
@@ -1046,6 +1071,8 @@ if (typeof jQuery === 'undefined') {
       btn_save: 'Save',
       btn_restore: 'Restore',
       txt_action: 'Actions',
+      txt_nolimit: 'Count of characters without limit',
+      txt_allowchar: 'Allowed count of characters %s',
       txt_remain: 'characters remaining'
     },
     de: {
@@ -1055,6 +1082,8 @@ if (typeof jQuery === 'undefined') {
       btn_save: 'Speichern',
       btn_restore: 'Inhalt',
       txt_action: 'Aktion',
+      txt_nolimit: '',
+      txt_allowchar: '',
       txt_remain: ''
     },
     fr: {
@@ -1064,6 +1093,8 @@ if (typeof jQuery === 'undefined') {
       btn_save: 'Sauver',
       btn_restore: 'Restaurer',
       txt_action: 'Mode',
+      txt_nolimit: '',
+      txt_allowchar: '',
       txt_remain: ''
     },
     cz: {
@@ -1073,6 +1104,8 @@ if (typeof jQuery === 'undefined') {
       btn_save: 'Uložit',
       btn_restore: 'Obnovit',
       txt_action: 'Akce',
+      txt_nolimit: 'Počet znaků bez omezení',
+      txt_allowchar: 'Povoleno celkem %s znaků',
       txt_remain: 'znak(ů) zbývá'
     }
   };
