@@ -917,6 +917,22 @@ if (typeof jQuery === 'undefined') {
       // Remove toolbar
       $table.find('.toolbar').remove();
 
+      // Remove all '.tabledit-span' and all created element
+      $table.find('td').each(function () {
+        // Get input element.
+        var $input = $(this).find('.tabledit-input');
+        // Get span text.
+        if($input.length != 0) {
+          var text = $.trim($(this).find('.tabledit-span').text());
+        } else {
+          var text = $.trim($(this).text());
+        }
+        // Put text to table cell
+        $(this).html(text)
+
+      });
+
+
       return;
     },
     update: function (options) {
