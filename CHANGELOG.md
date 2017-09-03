@@ -14,6 +14,13 @@ v1.2.7 DEV (xxxx/xx/xx)
   
 - Automatically setting CSRFToken from cookie csrftoken from sending method.
 - Fix count of character for textarea element.
+- Add new element type (input => date). Is not supported in Firefox, or Internet Explorer 11 and earlier versions
+
+```
+// [[column_index, input_name, input_type_date]
+
+[4, 'col4', 'date'],
+```
 
 
 v1.2.6 (2017/08/14)

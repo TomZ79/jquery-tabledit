@@ -31,7 +31,7 @@
  *    // [column_index, input_name]
  *    identifier: [0, 'id'],
  *
- *    // Columns to transform in editable cells -> supported type "input", "hidden", "number", "select", "textarea"
+ *    // Columns to transform in editable cells -> supported type "input", "hidden", "number", "date", "select", "textarea"
  *
  *    editable: [
  *
@@ -39,16 +39,19 @@
  *          [1, 'col1', 'input'],
  *
  *          // [[column_index, input_name, input_type_hidden]
- *          [2, 'col1', 'hidden'],
+ *          [2, 'col2', 'hidden'],
  *
  *          // [[column_index, input_name, input_type_number]
  *          [3, 'col3', 'number'],
  *
+ *          // [[column_index, input_name, input_type_date]
+ *          [4, 'col4', 'date'],
+ *
  *          // [[column_index, input_name, textarea_type, textarea_options] -> supported attributes "rows", "cols", "maxlength", "wrap"
- *          [4, 'col4', , 'textarea', '{"rows": "3", "cols": "10", "maxlength": "200", "wrap": "hard"}'],
+ *          [5, 'col5', , 'textarea', '{"rows": "3", "cols": "10", "maxlength": "200", "wrap": "hard"}'],
  *
  *          [column_index, input_name, select_type, select_options]]
- *          [5, 'col5', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']
+ *          [6, 'col6', 'select', '{"1": "Red", "2": "Green", "3": "Blue"}']
  *       ]
  *    }
  *
@@ -347,7 +350,7 @@ if (typeof jQuery === 'undefined') {
                 // Section for settings of valid types, values, attributes and other ...
                 // -----------------------------------
                 // List of valid types for columnType
-                var supportedTypes = ["input", "hidden", "number", "select", "textarea"];
+                var supportedTypes = ["input", "hidden", "number", "date", "select", "textarea"];
                 // List of valid attributes for columnType 'textarea'
                 var supportedAttrTextarea = ["rows", "cols", "maxlength", "wrap"];
                 // -----------------------------------
@@ -378,6 +381,13 @@ if (typeof jQuery === 'undefined') {
 
                     // Create text input element.
                     input = '<input class="tabledit-input ' + settings.inputClass + '" type="number" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
+
+                    break;
+                  case 'date':
+                    // NOTE: [type="date"] is not supported in Firefox, or Internet Explorer 11 and earlier versions
+
+                    // Create text input element.
+                    input = '<input class="tabledit-input ' + settings.inputClass + '" type="date" name="' + settings.columns.editable[i][1] + '" value="' + text + '" style="display: none;" disabled>';
 
                     break;
                   case 'select':
