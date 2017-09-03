@@ -547,7 +547,18 @@ if (typeof jQuery === 'undefined') {
           $(td).find('.countno_').html('...');
           // Focus on input element.
           if (settings.autoFocus) {
-            $input.focus();
+            // in case if disableSelectAutoFocus is set to false focus will not be set only for select element
+            if(!$input.is("select") || !settings.disableSelectAutoFocus) {
+              $input.focus();    
+              
+              // setting cursor position to end
+              if (settings.cursorPosition == 'end') {
+                $input.putCursorAtEnd()
+                .on("focus", function() { 
+                  $input.putCursorAtEnd()
+                });
+              }
+            }
           }
           // Add "edit" class and remove "view" class in td element.
           $(td).addClass('tabledit-edit-mode').removeClass('tabledit-view-mode');
@@ -643,6 +654,12 @@ if (typeof jQuery === 'undefined') {
           $(td).find('.tabledit-restore-button').show();
           // Set last deleted row.
           $lastDeletedRow = $(td).parent('tr');
+          
+          // Hiding the deleted row
+          if(settings.hideDeletedRow == true && settings.restoreButton == false)
+          {
+            $lastDeletedRow.hide("slow");
+          }
         },
         confirm: function (td) {
           // Reset all cells in edit mode.
@@ -978,6 +995,36 @@ if (typeof jQuery === 'undefined') {
       methods.init.apply(this, [options]);
     }
   };
+  
+  // Function to set cursor at the end
+  jQuery.fn.putCursorAtEnd = function() {
+    return this.each(function() {
+      var $el = $(this),
+          el = this;
+          
+      if (!$el.is(":focus")) {
+       $el.focus();
+      }
+      
+      if (el.setSelectionRange) 
+      {
+        var len = $el.val().length * 2;
+        
+        // Timeout seems to be required for Blink
+        setTimeout(function() {
+          el.setSelectionRange(len, len);
+        }, 1);
+      } 
+      else 
+      {
+        //fallback
+        $el.val($el.val());
+      }
+
+      // Scroll to the bottom, in case we're in a tall textarea
+      this.scrollTop = 999999;
+    });
+  };
 
   // CALL PLUGIN METHOD
   $.fn.Tabledit = function (method) {
@@ -1020,6 +1067,12 @@ if (typeof jQuery === 'undefined') {
     hideIdentifier: false,
     // Activate focus on first input of a row when click in save button
     autoFocus: true,
+    // Disable autofocus for select only. incase select is a js plugin like select2
+    disableSelectAutoFocus: false,
+    // Set the Cursor position to start or end in textbox
+    cursorPosition: 'start',
+    // Hide the deleted row after its deleted.
+    hideDeletedRow: false,
     // Localization -(en, default) - LowerCase or UpperCase
     lang: 'en',
     // Debug mode
