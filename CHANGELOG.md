@@ -1,4 +1,4 @@
-v1.2.7 DEV (xxxx/xx/xx)
+v1.2.7 (2017/09/04)
 -------------------
 - Add JavaScript RegEx (Trim Leading and Trailing)
 - Change name class for row when save changes

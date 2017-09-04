@@ -1,5 +1,8 @@
-# jQuery-Tabledit v1.2.6
+# jQuery-Tabledit v1.2.7
 Inline editor for HTML tables compatible with Bootstrap. Tabledit use Ajax for saving new row and for Edit and Delete row.
+
+Plugin works with other Plugins:
+- DataTable Plugin
 
 #### You can insert different types of tags
 
@@ -66,9 +69,7 @@ $('#my-table').Tabledit({
 
 
 ## Examples
-Original example by _markcell_ you find on 
-http://markcell.github.io/jquery-tabledit/#examples
- 
+
 **Readonly value in TD**
 
 You set this in the editable array, if you want readonly leave the column out of the 'editable' array e.g.: Column 3 wouldn't be editable.
@@ -85,14 +86,12 @@ $('#my-table').Tabledit({
 ```
 
 ## Documentation
-Original example by _markcell_ you find on
-http://markcell.github.io/jquery-tabledit/#documentation
 
 Full complete documentation by BluesatKV on 
 https://bluesatkv.github.io/jquery-tabledit/#documentation
 
 
 ## Changelog
-See CHANGELOG.md on 
+See CHANGELOG on 
 https://github.com/BluesatKV/jquery-tabledit/blob/master/CHANGELOG.md
 

@@ -1,25 +1,20 @@
-/*!
- * Tabledit v1.2.3 ()
- * Copyright (c) 2015 Celso Marques
- * Licensed under MIT (https://github.com/markcell/jQuery-Tabledit/blob/master/LICENSE)
- */
-
 /**
  * @description Inline editor for HTML tables compatible with Bootstrap
- * @version 1.2.3
- * @author  Celso Marques
- * @link    https://github.com/markcell/jQuery-Tabledit
+ * @version     1.2.3
+ * @author      Celso Marques
+ * @copyright   Copyright (c) 2015 Celso Marques
+ * @link        https://github.com/markcell/jQuery-Tabledit
  */
 
 /**
  * The modified version
- * @version 1.2.7 DEV
- * @author  BluesatKV
- * @link    https://github.com/BluesatKV/jquery-tabledit
+ * @version     1.2.7
+ * @author      Thomas Zukal
+ * @copyright   Copyright (c) 2017 Thomas Zukal
+ * @link        https://github.com/BluesatKV/jquery-tabledit
  *
  * REQUIRED USER OPTIONS
  * --------------------
- * // Example #1
  *
  *  columns: {
  *
