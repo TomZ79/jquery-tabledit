@@ -13,7 +13,10 @@
  * @copyright   Copyright (c) 2017 Thomas Zukal
  * @link        https://github.com/BluesatKV/jquery-tabledit
  *
- * @language    FR - Twimmcook (https://github.com/Twimmcook)
+ * @language    EN - Thomas Zukal (https://github.com/BluesatKV)
+ *              DE -
+ *              FR - Twimmcook (https://github.com/Twimmcook)
+ *              CZ - Thomas Zukal (https://github.com/BluesatKV)
  *
  * REQUIRED USER OPTIONS
  * --------------------

@@ -14,7 +14,7 @@ https://bluesatkv.github.io/jquery-tabledit/#examples7
 #### You can add new row to table
 
 More in Example 9 on 
-https://bluesatkv.github.io/jquery-tabledit/#examples9
+https://bluesatkv.github.io/jquery-tabledit/#examples9-10
 
 
 ![img01](https://user-images.githubusercontent.com/20857152/29292558-cbca754c-8147-11e7-82c8-1704cc7d9a7b.png)
