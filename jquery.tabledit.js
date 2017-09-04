@@ -81,13 +81,13 @@ if (typeof jQuery === 'undefined') {
   var methods = {
     init: function (options) {
 
-      // Check if element is 'table'
-      if (!this.is('table')) {
-        throw new Error('Tabledit only works when applied to a table.');
-      }
-
       // jQuery wrapper for clicked element
       var $table = this;
+
+      // Check if element is 'table'
+      if ($table.prop("tagName").toLowerCase() !== 'table') {
+        throw new Error('Tabledit only works when applied to a table.');
+      }
 
       // Function - check if value isn't ...
       var notNull = function (value) {
@@ -465,6 +465,8 @@ if (typeof jQuery === 'undefined') {
               if ($table.find('th.tabledit-toolbar-column').length === 0) {
                 $table.find('tr:first').append('<th class="tabledit-toolbar-column">' + $table.Tabledit.langs[settings.lang].txt_action + '</th>');
               }
+
+              console.log($table.find('tr:first'));
 
               // Create edit button.
               if (settings.editButton) {
