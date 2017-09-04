@@ -13,6 +13,8 @@
  * @copyright   Copyright (c) 2017 Thomas Zukal
  * @link        https://github.com/BluesatKV/jquery-tabledit
  *
+ * @language    FR - Twimmcook (https://github.com/Twimmcook)
+ *
  * REQUIRED USER OPTIONS
  * --------------------
  *
@@ -1110,15 +1112,15 @@ if (typeof jQuery === 'undefined') {
       txt_remain: ''
     },
     fr: {
-      btn_edit: 'Éditer',
+      btn_edit: 'Editer',
       btn_delete: 'Supprimer',
       btn_confirm: 'Confirmer',
-      btn_save: 'Sauver',
+      btn_save: 'Enregistrer',
       btn_restore: 'Restaurer',
-      txt_action: 'Mode',
-      txt_nolimit: '',
-      txt_allowchar: '',
-      txt_remain: ''
+      txt_action: 'Actions',
+      txt_nolimit: 'Nombre de caractères sans limite',
+      txt_allowchar: 'Nombre de caractères autorisés %s',
+      txt_remain: 'caractères restants'
     },
     cz: {
       btn_edit: 'Editovat',
