@@ -8,7 +8,7 @@
 
 /**
  * The modified version
- * @version     1.2.7
+ * @version     1.2.8 DEV
  * @author      Thomas Zukal
  * @copyright   Copyright (c) 2017 Thomas Zukal
  * @link        https://github.com/BluesatKV/jquery-tabledit
