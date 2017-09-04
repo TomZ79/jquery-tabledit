@@ -463,10 +463,8 @@ if (typeof jQuery === 'undefined') {
 
               // Add toolbar column header if not exists.
               if ($table.find('th.tabledit-toolbar-column').length === 0) {
-                $table.find('tr:first').append('<th class="tabledit-toolbar-column">' + $table.Tabledit.langs[settings.lang].txt_action + '</th>');
+                $table.find('tr:first').append('<th class="tabledit-toolbar-column ' + settings.toolbarHeaderClass + '">' + $table.Tabledit.langs[settings.lang].txt_action + '</th>');
               }
-
-              console.log($table.find('tr:first'));
 
               // Create edit button.
               if (settings.editButton) {
@@ -1000,12 +998,14 @@ if (typeof jQuery === 'undefined') {
     // Server request method for action 'edit' and 'delete'
     editmethod: 'post',
     deletemethod: 'post',
-    // Class for form inputs
-    inputClass: 'form-control input-sm',
+    // Class for toolbar header column
+    toolbarHeaderClass: '',
     // Class for buttons toolbar
     toolbarClass: 'btn-toolbar',
     // Class for buttons group
     groupClass: 'btn-group btn-group-sm',
+    // Class for form inputs
+    inputClass: 'form-control input-sm',
     // Class for row when ajax request fails
     dangerClass: 'danger',
     // Class for row when save changes

@@ -6,11 +6,16 @@ v1.2.7 DEV (xxxx/xx/xx)
   Old name -> `warningClass: 'warning'`
   
   New name -> `successClass: 'success'`
+  
 - Add Class for prohibiting cell editing
   
   Default -> `noEditClass: 'noedit'`
   
   E.G: `<td class="noedit">Some Text</td>`
+  
+ - Add Class for toolbar header column. You can use for setting `no-sort` in DataTable plugin 
+ 
+    Default -> `toolbarHeaderClass: ''`
   
 - Automatically setting CSRFToken from cookie csrftoken from sending method.
 - Fix count of character for textarea element.
