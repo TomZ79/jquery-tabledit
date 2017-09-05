@@ -935,7 +935,7 @@ if (typeof jQuery === 'undefined') {
         if($input.length != 0) {
           var text = $.trim($(this).find('.tabledit-span').text());
         } else {
-          var text = $.trim($(this).text());
+          var text = $.trim($(this).html());
         }
         // Put text to table cell
         $(this).html(text)
