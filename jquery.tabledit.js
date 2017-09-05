@@ -85,7 +85,7 @@ if (typeof jQuery === 'undefined') {
       var $table = this;
 
       // Check if element is 'table'
-      if ($table.prop("tagName").toLowerCase() !== 'table') {
+      if ($table.prop("tagName") !== 'TABLE') {
         throw new Error('Tabledit only works when applied to a table.');
       }
 
@@ -429,7 +429,7 @@ if (typeof jQuery === 'undefined') {
                         input += ($.inArray(index, supportedAttrTextarea) != -1) ? index + '="' + value + '" ' : '';
 
                         // Check if maxlength attribute exists and set text to character count
-                        if (index == 'maxlength' && value.length > 0 ) {
+                        if (index == 'maxlength' && value.length > 0) {
                           counttext = ($table.Tabledit.langs[settings.lang].txt_allowchar).replace('%s', value) + ' | <span class="countno_"></span> ' + $table.Tabledit.langs[settings.lang].txt_remain;
                         } else {
                           counttext = $table.Tabledit.langs[settings.lang].txt_nolimit;
@@ -932,7 +932,7 @@ if (typeof jQuery === 'undefined') {
         // Get input element.
         var $input = $(this).find('.tabledit-input');
         // Get span text.
-        if($input.length != 0) {
+        if ($input.length != 0) {
           var text = $.trim($(this).find('.tabledit-span').text());
         } else {
           var text = $.trim($(this).html());
