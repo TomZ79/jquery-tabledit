@@ -1,3 +1,9 @@
+v1.2.9 DEV (2018/XX/XX)
+-------------------
+- Fix typo
+- Works with Bootstrap stable 4.0.0
+
+
 v1.2.7 (2017/09/04)
 -------------------
 - Add JavaScript RegEx (Trim Leading and Trailing)
