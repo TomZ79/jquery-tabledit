@@ -8,9 +8,9 @@
 
 /**
  * The modified version
- * @version     1.2.8 DEV
+ * @version     1.2.9 DEV
  * @author      Thomas Zukal
- * @copyright   Copyright (c) 2017 Thomas Zukal
+ * @copyright   Copyright (c) 2017-2018 Thomas Zukal
  * @link        https://github.com/BluesatKV/jquery-tabledit
  *
  * @language    EN - Thomas Zukal (https://github.com/BluesatKV)
@@ -473,21 +473,21 @@ if (typeof jQuery === 'undefined') {
 
               // Create delete button.
               if (settings.deleteButton) {
-                deleteButton = '<button type="button" class="tabledit-delete-button ' + settings.buttons.delete.class + '" style="float: none;">' + deleteButtonHtml + '</button>';
-                confirmButton = '<button type="button" class="tabledit-confirm-button ' + settings.buttons.confirm.class + '" style="display: none; float: none;">' + confirmButtonHtml + '</button>';
+                deleteButton = '<button type="button" class="tabledit-delete-button ' + settings.buttons.delete.class + '" style="float: none; ">' + deleteButtonHtml + '</button>';
+                confirmButton = '<button type="button" class="tabledit-confirm-button ' + settings.buttons.confirm.class + '" style="display: none; float: none; margin-left: 10px;">' + confirmButtonHtml + '</button>';
               }
 
               // Create save button.
               if (settings.editButton && settings.saveButton) {
-                saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none;">' + saveButtonHtml + '</button>';
+                saveButton = '<button type="button" class="tabledit-save-button ' + settings.buttons.save.class + '" style="display: none; float: none; margin-left: 10px;">' + saveButtonHtml + '</button>';
               }
 
               // Create restore button.
               if (settings.deleteButton && settings.restoreButton) {
-                restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none;">' + restoreButtonHtml + '</button>';
+                restoreButton = '<button type="button" class="tabledit-restore-button ' + settings.buttons.restore.class + '" style="display: none; float: none; margin-left: 10px;">' + restoreButtonHtml + '</button>';
               }
 
-              var toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;">\n\
+              var toolbar = '<div class="tabledit-toolbar ' + settings.toolbarClass + '" style="text-align: left;flex-wrap: nowrap;">\n\
                                            <div class="' + settings.groupClass + '" style="float: none;">' + editButton + deleteButton + '</div>\n\
                                            ' + saveButton + '\n\
                                            ' + confirmButton + '\n\
@@ -629,7 +629,7 @@ if (typeof jQuery === 'undefined') {
           // Send AJAX request to server.
           var ajaxResult = ajax(settings.buttons.delete.action);
           // Disable identifier hidden input.
-          $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+          $(td).closest('tr').find('input.tabledit-identifier').attr('disabled', true);
 
           if (ajaxResult === false) {
             return;
@@ -660,7 +660,7 @@ if (typeof jQuery === 'undefined') {
           // Send AJAX request to server.
           var ajaxResult = ajax(settings.buttons.restore.action);
           // Disable identifier hidden input.
-          $(td).parents('tr').find('input.tabledit-identifier').attr('disabled', true);
+          $(td).closest('tr').find('input.tabledit-identifier').attr('disabled', true);
 
           if (ajaxResult === false) {
             return;
@@ -699,7 +699,7 @@ if (typeof jQuery === 'undefined') {
             // Get current state before reset to view mode.
             var activated = $(this).hasClass('active');
 
-            var $td = $(this).parents('td');
+            var $td = $(this).closest('td');
 
             Delete.reset($td);
 
@@ -722,7 +722,7 @@ if (typeof jQuery === 'undefined') {
             // Stop, the default action of the event will not be triggered
             event.preventDefault();
 
-            var $td = $(this).parents('td');
+            var $td = $(this).closest('td');
 
             Delete.submit($td);
 
@@ -743,7 +743,7 @@ if (typeof jQuery === 'undefined') {
             // Stop, the default action of the event will not be triggered
             event.preventDefault();
 
-            Delete.restore($(this).parents('td'));
+            Delete.restore($(this).closest('td'));
 
             event.handled = true;
           }
@@ -772,7 +772,7 @@ if (typeof jQuery === 'undefined') {
 
             if (!activated) {
               // Change to edit mode for all columns in reverse way.
-              $($button.parents('tr').find('td.tabledit-view-mode').get().reverse()).each(function () {
+              $($button.closest('tr').find('td.tabledit-view-mode').get().reverse()).each(function () {
                 Mode.edit(this);
               });
             }
@@ -793,7 +793,7 @@ if (typeof jQuery === 'undefined') {
             event.preventDefault();
 
             // Submit and update all columns.
-            Edit.submit($(this).parents('tr').find('td.tabledit-edit-mode'));
+            Edit.submit($(this).closest('tr').find('td.tabledit-edit-mode'));
 
             event.handled = true;
           }
@@ -1054,7 +1054,7 @@ if (typeof jQuery === 'undefined') {
       },
       restore: {
         class: 'btn btn-sm btn-warning',
-        html: 'Restore',
+        html: '',
         action: 'restore'
       },
       confirm: {
