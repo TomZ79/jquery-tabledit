@@ -179,6 +179,40 @@ if (typeof jQuery === 'undefined') {
       }
 
       /**
+       * AJAX Error Handling
+       *
+       * @param jqXHR
+       * @param textStatus  {string}
+       * @param errorThrown {string}
+       */
+      function handleAjaxError(jqXHR, textStatus, errorThrown) {
+        var msg = '';
+        var statusErrorMap = {
+          '0': 'Not connect. Verify Network.',
+          '400': 'Server understood the request, but request content was invalid [400].',
+          '401': 'Unauthorized access [401].',
+          '403': 'Forbidden resource can not be accessed [403].',
+          '404': 'Requested page not found. [404]',
+          '500': 'Internal Server Error [500].',
+          '503': 'Service unavailable [503].'
+        };
+
+        if (jqXHR.status) {
+          msg = statusErrorMap[jqXHR.status];
+        } else if (textStatus == 'parsererror') {
+          msg = "Ajax Error!! Parsing JSON Request failed. \n" + "Detail =>" + textStatus + ' : ' + errorThrown;
+        } else if (textStatus === 'timeout') {
+          msg = 'Time out error.';
+        } else if (textStatus === 'abort') {
+          msg = 'Ajax request aborted.';
+        } else {
+          msg = 'Uncaught Error.\n' + jqXHR.responseText;
+        }
+
+        return msg;
+      }
+
+      /**
        * Send AJAX request to server.
        *
        * @param {string} action
@@ -281,10 +315,10 @@ if (typeof jQuery === 'undefined') {
           }
 
           // Initiate save failed custom callback
-          settings.onFail(jqXHR, textStatus, errorThrown);
+          settings.onFail(jqXHR, exception);
 
-          // Console log output
-          console.log('Tabledit Ajax fail => ' + textStatus + ' : ' + errorThrown);
+          // Output to console with data
+          if (options.debug) console.log(handleAjaxError(jqXHR, textStatus, errorThrown));
 
         });
 
