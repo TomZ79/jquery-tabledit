@@ -2,6 +2,7 @@ v1.2.9 DEV (2018/XX/XX)
 -------------------
 - Fix typo
 - Works with Bootstrap stable 4.0.0
+- Add Ajax error handler custom code
 
 
 v1.2.7 (2017/09/04)
