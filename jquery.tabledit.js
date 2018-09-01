@@ -233,7 +233,7 @@ if (typeof jQuery === 'undefined') {
         // In onAjax() it is possible to modify the document sent in ajax request, e.g. adding additional information required by server, or do formatting / restructing of document to be sent.
         if (result === false) {
           return false;
-        } else {
+        } else if(result !== undefined) {
           serialize = result;
         }
 
